@@ -1,0 +1,10 @@
+*.tmp
+.dropbox
+.project
+~*.docx
+~*.xlsx
+~*.pptx
+ParamFiles/
+*.png
+Plots/
+.vs/
