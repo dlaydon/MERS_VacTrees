@@ -1,0 +1,7 @@
+*.log
+Output/
+x64/
+*conflicted*
+*.cd
+Debug/
+Release/
