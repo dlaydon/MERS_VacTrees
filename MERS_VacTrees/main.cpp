@@ -58,7 +58,7 @@ void runMCMC				(AllOutput &OUTPUT, ModelRun &MR, double optAR = 0.24, double de
 	InitializeOutputValues(OUTPUT);
 
 	double currAR;
-	int numberOfParameters = _parameter.size();
+	int numberOfParameters = (int) _parameter.size();
 	vector<double>	numberOfMoveAccepted(numberOfParameters, 0.	);
 	vector<int>		numberOfMoveProposed(numberOfParameters, 0	);
 	double numberProposedUpdateInfector = 0., numberAcceptedUpdateInfector = 0.;
@@ -350,7 +350,7 @@ void runMCMC				(AllOutput &OUTPUT, ModelRun &MR, double optAR = 0.24, double de
 		double alpha				= 0.05;
 		double RunningTotal			= 0;
 		int NumPosteriorSamples		= MR.NumIterations - MR.BurnIn;
-		int NumEntriesInTails		= floor	(alpha * NumPosteriorSamples / 2);
+		int NumEntriesInTails		= (int) floor	(alpha * NumPosteriorSamples / 2);
 		int NumElementsForMedian	= NumPosteriorSamples / 2;
 		int LowerIndex				= max(0, NumEntriesInTails - 1); 
 		int UpperIndex				= min(NumPosteriorSamples - 1, NumPosteriorSamples - NumEntriesInTails - 1);
@@ -393,7 +393,7 @@ void runMCMC				(AllOutput &OUTPUT, ModelRun &MR, double optAR = 0.24, double de
 		double alpha				= 0.05;
 		double RunningTotal			= 0;
 		int NumPosteriorSamples		= MR.NumIterations - MR.BurnIn;
-		int NumEntriesInTails		= floor	(alpha * NumPosteriorSamples / 2);
+		int NumEntriesInTails		= (int) floor	(alpha * NumPosteriorSamples / 2);
 		int NumElementsForMedian	= NumPosteriorSamples / 2;
 		int LowerIndex				= max(0, NumEntriesInTails - 1); 
 		int UpperIndex				= min(NumPosteriorSamples - 1, NumPosteriorSamples - NumEntriesInTails - 1);
