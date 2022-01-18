@@ -10,27 +10,43 @@ VaccCampaignStrategy	Convert_VaccCampaignStrategy_FromString	(const std::string&
 {
 		 if (OptionString == "REACTIVE"		) return VaccCampaignStrategy::REACTIVE;
 	else if (OptionString == "PROACTIVE"	) return VaccCampaignStrategy::PROACTIVE;
-	else std::cout << endl << "Convert_VaccCampaignStrategy_FromString ERROR: String not recognized" << endl;
+	else 
+	{
+		std::cout << endl << "Convert_VaccCampaignStrategy_FromString ERROR: String not recognized" << endl;
+		exit(1);
+	}
 }
 ReactiveLevel			Convert_ReactiveLevel_FromString		(const std::string& OptionString)
 {
 		 if (OptionString == "HOSPITAL") return ReactiveLevel::HOSPITAL;
 	else if (OptionString == "REGIONAL") return ReactiveLevel::REGIONAL;
 	else if (OptionString == "NATIONAL") return ReactiveLevel::NATIONAL;
-	else std::cout << endl << "Convert_ReactiveLevel_FromString ERROR: String not recognized" << endl;
+	else 
+	{
+		std::cout << endl << "Convert_ReactiveLevel_FromString ERROR: String not recognized" << endl;
+		exit(1);
+	}
 }
 std::string Convert_VaccCampaignStrategy_FromEnumClass	(VaccCampaignStrategy VacCampStrategy)
 {
 		 if (VacCampStrategy == VaccCampaignStrategy::REACTIVE	) return "REACTIVE"		;
 	else if (VacCampStrategy == VaccCampaignStrategy::PROACTIVE	) return "PROACTIVE"	;	
-	else std::cout << endl << "Convert_VaccCampaignStrategy_FromString ERROR: Class not recognized" << endl;
+	else 
+	{
+		std::cout << endl << "Convert_VaccCampaignStrategy_FromString ERROR: Class not recognized" << endl;
+		exit(1);
+	}
 }
 std::string Convert_ReactiveLevel_FromEnumClass			(ReactiveLevel ReactLevel)
 {
 		 if (ReactLevel == ReactiveLevel::HOSPITAL) return "HOSPITAL";
 	else if (ReactLevel == ReactiveLevel::REGIONAL) return "REGIONAL";
 	else if (ReactLevel == ReactiveLevel::NATIONAL) return "NATIONAL";
-	else std::cout << endl << "Convert_VaccCampaignStrategy_FromEnumClass ERROR: Class not recognized" << endl;
+	else 
+	{
+		std::cout << endl << "Convert_VaccCampaignStrategy_FromEnumClass ERROR: Class not recognized" << endl;
+		exit(1);
+	}
 }
 
 bool FileExists				(string FileName)

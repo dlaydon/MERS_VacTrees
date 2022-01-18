@@ -2,7 +2,6 @@
 #include "Macros.h"
 #include "DataStructure.h"
 #include "randlib_par.h"
-#include "omp.h"
 #include "DJL_Structs.h"
 #include "Globals.h"
 #include "Likelihood.h"

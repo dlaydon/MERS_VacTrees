@@ -305,7 +305,7 @@ void initiateInfector			()
 			if (_individualObsR[iInfector][0] == 0)		// and if the observed reproduction number of that infector is zero.
 				_numberOfIntroducersWith0Sec++; 
 }
-double drawInfector				(int iInfectee)
+int drawInfector				(int iInfectee)
 {
 	return rmultinomialOneValue(_weightedProbaOfTimingTrans[iInfectee], _possibleInfectors[iInfectee]);
 }

@@ -21,7 +21,7 @@ int drawHospitalSecCase(int hospitalCase, int H2Htype);
 
 void	updateProbaOfTimingTrans();
 void initiateInfector			();
-double	drawInfector(int iInfectee);
+int	drawInfector(int iInfectee);
 
 void fixGenerationDownStream	(int iCase, int generation);
 void changeInfector				(int iCase, int oldInfector, int newInfector);
