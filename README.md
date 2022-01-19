@@ -12,7 +12,7 @@ Full details are available at ADD LINK.
 ## Building
 
 The model is written in C++. 
-C++ source and header files are located in the subdirectory [MERS_VacTrees](./MERS_VacTrees), 
+Source and header files are located in the subdirectory [MERS_VacTrees](./MERS_VacTrees), 
 ready for loading and building from Visual Studio. R output processing code can be found in the 
 subdirectory [R](./R), which also contains scripts to build batch files of large cluster jobs. 
 
@@ -35,9 +35,9 @@ set one variable, `UseCommandLine` in `Structs::ModelRun::UseCommandLine` to `fa
 required (this is mostly useful for debugging). Otherwise if `UseCommandLine` is set to `true`, then 
 parameter values in `Structs::ModelRun` will be overwritten by values in the parameter file.
 
-For convenience, compiled executables will output to the [x64/Release](./x64/Release) folder 
+Compiled executables will output to the [x64/Release](./x64/Release) folder 
 (although this can be changed by specifying a different platform and configuration in Visual Studio, 
-or by changing the project properties)
+or by changing the project properties). The actual executable is not tracked by git.
  
 We have provided example batch (`.bat`) files to reproduce an particular "proactive" scenario (`Example_Proactive.bat`)
 and an example "reactive" scenario (`Example_Reactive.bat`), 

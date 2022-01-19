@@ -191,24 +191,23 @@ struct SingleOutputStruct {
 struct FileStrings_Struct {
 
 	string pathInput, pathOutput;
-	string inputFileName, Simon_scenarioName, DJL_scenarioName;
+	string inputFileName, ScenarioName;
 	string inputFile;
 	string Chains, IndividualR, Infector, ClusterR, ClusterReductionR, SimulCluster, Tree, Tree_CF, CF_Chains, CF_EpiCurves, CF_EpiCurves_Deaths;
 	string MetaData; 
 	string InitParamValues;
 
-	void init(string scenarioNameArg, string inputFileNameArg, string DJLscenarioNameArg)
+	void init(string inputFileNameArg, string ScenarioNameArg)
 	{
 		//// record argument variables. 
-		inputFileName			= inputFileNameArg; 
-		Simon_scenarioName		= scenarioNameArg;
-		DJL_scenarioName		= DJLscenarioNameArg; 
+		inputFileName	= inputFileNameArg; 
+		ScenarioName	= ScenarioNameArg;
 
 		pathInput	= "Data\\"	;
 		pathOutput	= "Output\\";
 		inputFile	= pathInput + inputFileName;
 
-		string CombinedScenarioName = Simon_scenarioName + DJL_scenarioName;
+		string CombinedScenarioName = ScenarioName;
 
 		Chains				= pathOutput	+ "Chains"				+ CombinedScenarioName + ".txt";
 		IndividualR			= pathOutput	+ "individualR"			+ CombinedScenarioName + ".txt";

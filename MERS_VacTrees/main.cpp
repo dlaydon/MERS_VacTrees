@@ -658,9 +658,8 @@ int main(int argc, char *argv[])
 	double delta			= 0;
 
 	//// Choose ScenarioName 
-	string Simon_scenarioName		= Choose_Simon_ScenarioName	(MR, kIntro)	; 	std::cout << "Simon_scenarioName = "	<< Simon_scenarioName	<< std::endl;
-	string inputFileName			= "MERS_forCpp.txt"							; 	std::cout << "inputFileName = "			<< inputFileName		<< std::endl;
-	string DJLScenarioName			= Choose_DJL_scenarioName	(MR)			; 	std::cout << "DJLScenarioName = "		<< DJLScenarioName		<< std::endl;
+	string inputFileName	= "MERS_forCpp.txt"			; 	std::cout << "inputFileName = "	<< inputFileName	<< std::endl;
+	string ScenarioName		= ChooseScenarioName(MR)	; 	std::cout << "ScenarioName = "	<< ScenarioName		<< std::endl;
 
 	//// AssignNumber of Hospitals & regions (global variables)
 	_numberOfHospitals	= Choose_numberOfHospitals(_dataSevereCases); 
@@ -668,7 +667,7 @@ int main(int argc, char *argv[])
 
 	//// File paths
 	FileStrings_Struct FileStrings; 
-	FileStrings.init (Simon_scenarioName, inputFileName, DJLScenarioName);
+	FileStrings.init (inputFileName, ScenarioName);
 	AllOutput OUTPUT;
 	OUTPUT.init(FileStrings);
 

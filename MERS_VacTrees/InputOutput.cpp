@@ -435,8 +435,7 @@ void WriteModelMetaData(AllOutput &OUTPUT, ModelRun &MR, FileStrings_Struct File
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Efficacy_CamelControls		)	<< "\t" << MR.Efficacy_CamelControls		<< std::endl;
 	
 	///// FileStrings
-	OUTPUT.MetaData << GET_VARIABLE_NAME(FileStrings.Simon_scenarioName		)	<< "\t" << FileStrings.Simon_scenarioName	<< std::endl;
-	OUTPUT.MetaData << GET_VARIABLE_NAME(FileStrings.DJL_scenarioName		)	<< "\t" << FileStrings.DJL_scenarioName		<< std::endl;
+	OUTPUT.MetaData << GET_VARIABLE_NAME(FileStrings.ScenarioName			)	<< "\t" << FileStrings.ScenarioName		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(FileStrings.inputFileName			)	<< "\t" << FileStrings.inputFileName		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(FileStrings.inputFile				)	<< "\t" << FileStrings.inputFile			<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(FileStrings.Chains					)	<< "\t" << FileStrings.Chains				<< std::endl;
@@ -479,27 +478,6 @@ void WriteModelMetaData(AllOutput &OUTPUT, ModelRun &MR, FileStrings_Struct File
 	OUTPUT.MetaData.close(); 
 }
 
-std::string Choose_Simon_ScenarioName	(ModelRun &MR, double kIntro) //// unseen "arguments" are various global variables, e.g. _spatialLevel
-{
-	std::stringstream scenarioNameStream;
-	scenarioNameStream << "V1.10correctTree";
-	scenarioNameStream << "-data"		<< _dataSevereCases;
-	scenarioNameStream << "-level"		<< _variabilityRAtClusterLevel;
-	scenarioNameStream << "-spatial"	<< _spatialLevel;
-	scenarioNameStream << "-heteroR"	<< _heterogeneityR;
-	scenarioNameStream << "-reductionR" << _withReductionR;
-	scenarioNameStream << "-seasonal"	<< _withSeasonality;
-	scenarioNameStream << "-introOverD" << _introOverdispersed;
-	if ((_introOverdispersed == 1) & (_estimOverdispersionIntro == 0)) scenarioNameStream << ".k" << kIntro;
-	if (_estimOverdispersionIntro == 1) scenarioNameStream << ".estimKIntro";
-
-	std::string Simon_scenarioName("");
-
-	Simon_scenarioName = "";
-
-	return Simon_scenarioName;
-}
-
 template <typename T>
 std::string ToStringWithPrecision(const T a_value, const int n = 2)
 {
@@ -508,42 +486,42 @@ std::string ToStringWithPrecision(const T a_value, const int n = 2)
     out << std::fixed << a_value;
     return out.str();
 }
-std::string Choose_DJL_scenarioName	(ModelRun& MR)
+std::string ChooseScenarioName	(ModelRun& MR)
 {
-	std::string DJL_ScenarioName = ""; 
+	std::string ScenarioName = ""; 
 
-	if (MR.Efficacy_Start == 0) 	DJL_ScenarioName = DJL_ScenarioName + "_NoHumans";  // i.e. if not vaccinating humans
-	else							DJL_ScenarioName = DJL_ScenarioName + "_Eff_" + ToStringWithPrecision(MR.Efficacy_Start, 2); // i.e. if vaccinating humans
+	if (MR.Efficacy_Start == 0) 	ScenarioName = ScenarioName + "_NoHumans";  // i.e. if not vaccinating humans
+	else							ScenarioName = ScenarioName + "_Eff_" + ToStringWithPrecision(MR.Efficacy_Start, 2); // i.e. if vaccinating humans
 	
 	if (MR.Efficacy_CamelControls > 0.0)
-		DJL_ScenarioName = DJL_ScenarioName + "_CamelsControlEff_" + ToStringWithPrecision(MR.Efficacy_CamelControls, 2);
+		ScenarioName = ScenarioName + "_CamelsControlEff_" + ToStringWithPrecision(MR.Efficacy_CamelControls, 2);
 	
 	if (MR.Efficacy_Start != 0) // i.e. if vaccinating humans
 	{
 		if (MR.VacCampStrategy == VaccCampaignStrategy::PROACTIVE)
 		{
-			DJL_ScenarioName = DJL_ScenarioName + "_ProAct";
-			DJL_ScenarioName = DJL_ScenarioName + "_Dur_" + ToStringWithPrecision(MR.VaccineDuration		, 2);
-			DJL_ScenarioName = DJL_ScenarioName + "_Lag_" + ToStringWithPrecision(MR.TimeSinceVaccination	, 2);
+			ScenarioName = ScenarioName + "_ProAct";
+			ScenarioName = ScenarioName + "_Dur_" + ToStringWithPrecision(MR.VaccineDuration		, 2);
+			ScenarioName = ScenarioName + "_Lag_" + ToStringWithPrecision(MR.TimeSinceVaccination	, 2);
 		}
 		else if (MR.VacCampStrategy == VaccCampaignStrategy::REACTIVE)
 		{
 			if (MR.ReactLevel != ReactiveLevel::HOSPITAL)
 			{
-					 if (MR.ReactLevel == ReactiveLevel::REGIONAL) DJL_ScenarioName = DJL_ScenarioName + "_reg";
-				else if (MR.ReactLevel == ReactiveLevel::NATIONAL) DJL_ScenarioName = DJL_ScenarioName + "_nat";
+					 if (MR.ReactLevel == ReactiveLevel::REGIONAL) ScenarioName = ScenarioName + "_reg";
+				else if (MR.ReactLevel == ReactiveLevel::NATIONAL) ScenarioName = ScenarioName + "_nat";
 			}
 		}
 
-		if (MR.Coverage				!= 1.0	)	DJL_ScenarioName = DJL_ScenarioName + "_Cov"		+ ToStringWithPrecision		(MR.Coverage, 2			);
-		if (MR.ImplementationDelay	!= 0	)	DJL_ScenarioName = DJL_ScenarioName + "_ImpDelay"	+ std::to_string			(MR.ImplementationDelay	);
-		if (MR.ImmunityDelay		!= 0	)	DJL_ScenarioName = DJL_ScenarioName + "_VacDelay"	+ std::to_string			(MR.ImmunityDelay		);
+		if (MR.Coverage				!= 1.0	)	ScenarioName = ScenarioName + "_Cov"		+ ToStringWithPrecision		(MR.Coverage, 2			);
+		if (MR.ImplementationDelay	!= 0	)	ScenarioName = ScenarioName + "_ImpDelay"	+ std::to_string			(MR.ImplementationDelay	);
+		if (MR.ImmunityDelay		!= 0	)	ScenarioName = ScenarioName + "_VacDelay"	+ std::to_string			(MR.ImmunityDelay		);
 
-			 if (MR.VaccinateAllHumans		)	DJL_ScenarioName = DJL_ScenarioName + "_Blanket"	;
-		else if (MR.Vaccinate_HCW			)	DJL_ScenarioName = DJL_ScenarioName + "_vHCW"		;
+			 if (MR.VaccinateAllHumans		)	ScenarioName = ScenarioName + "_Blanket"	;
+		else if (MR.Vaccinate_HCW			)	ScenarioName = ScenarioName + "_vHCW"		;
 	}
 
-	return DJL_ScenarioName; 
+	return ScenarioName; 
 }
 
 int Choose_numberOfHospitals(int dataSevereCases)
