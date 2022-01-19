@@ -4,6 +4,5 @@
 ~*.docx
 ~*.xlsx
 ~*.pptx
-ParamFiles/
 *.png
 .vs/

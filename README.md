@@ -41,10 +41,6 @@ Compiled executables will output to the [x64/Release](./x64/Release) folder
 (although this can be changed by specifying a different platform and configuration in Visual Studio, 
 or by changing the project properties). The actual executable is not tracked by git.
  
-We have provided example batch (`.bat`) files to reproduce an particular "proactive" scenario (`Example_Proactive.bat`)
-and an example "reactive" scenario (`Example_Reactive.bat`), 
-as well as the script [R/MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R)
-
 ## Parameter files
 
 The executable reads in a parameter file, named `Params_ParticularModelSettings.txt`, 
@@ -57,6 +53,10 @@ This output string is then included within all output file names.
 The output strings cannot interpretted without world-class guesswork, or reference to either the C++ function 
 `ChooseScenarioName` in [/MERS_VacTrees/InputOutput.cpp](./MERS_VacTrees/InputOutput.cpp), 
 or the R function `ChooseOutputString` in [R/DirectoryFunctions.R](./R/DirectoryFunctions.R).
+
+We have provided example batch (`.bat`) files to reproduce "proactive" scenarios (`Proactive_WithCamels_Many.bat`)
+and "reactive" scenarios (`Reactive_WithCamels_Many.bat`) in the directory [ParamFiles](./ParamFiles), and others can 
+be made in the script [R/MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R)
 
 ## Output
 
