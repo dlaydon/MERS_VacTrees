@@ -433,6 +433,7 @@ void WriteModelMetaData(AllOutput &OUTPUT, ModelRun &MR, FileStrings_Struct File
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.OutputTreesEvery	) << "\t" << MR.OutputTreesEvery	<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.NumCFsPerTree		) << "\t" << MR.NumCFsPerTree		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.StoreEvery			) << "\t" << MR.StoreEvery			<< std::endl;
+	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.UseCommandLine		) << "\t" << MR.UseCommandLine		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.DJL_InputData		) << "\t" << MR.DJL_InputData		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.max_threads			) << "\t" << MR.max_threads			<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.seed1				) << "\t" << MR.seed1				<< std::endl;

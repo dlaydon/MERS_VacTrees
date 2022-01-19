@@ -612,8 +612,11 @@ int main(int argc, char *argv[])
 	ModelRun MR; 
 	fflush(stderr);	fflush(stdout);
 
-	string pParamFileName = argv[1];
-	ReadInParams(MR, pParamFileName);
+	if (MR.UseCommandLine)
+	{
+		string pParamFileName = argv[1];
+		ReadInParams(MR, pParamFileName);
+	}
 	fflush(stderr);	fflush(stdout);
 	MR.init();
 	CorrectAndProcessInputParams(MR); 

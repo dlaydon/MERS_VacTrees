@@ -204,8 +204,8 @@ struct FileStrings_Struct {
 		Simon_scenarioName		= scenarioNameArg;
 		DJL_scenarioName		= DJLscenarioNameArg; 
 
-		pathInput	= "..\\..\\Data\\"	;
-		pathOutput	= "..\\..\\Output\\";
+		pathInput	= "Data\\"	;
+		pathOutput	= "Output\\";
 		inputFile	= pathInput + inputFileName;
 
 		string CombinedScenarioName = Simon_scenarioName + DJL_scenarioName;
@@ -270,6 +270,7 @@ enum class ReactiveLevel {
 
 struct ModelRun { //// Set of housekeeping variables
 
+	bool UseCommandLine		= false; 
 	bool DJL_InputData		= true;
 
 	int NumIterations			= 11000; 
