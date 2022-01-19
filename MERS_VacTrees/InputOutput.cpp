@@ -522,11 +522,7 @@ std::string Choose_Simon_ScenarioName	(ModelRun &MR, double kIntro) //// unseen 
 std::string Choose_InputFileName		(ModelRun &MR)
 {
 	string inputFileName;
-			if (MR.DJL_InputData)			inputFileName = "DJL_MERS_forCpp.txt"; 
-	else	if (_dataSevereCases == 0)		inputFileName = "data.branchingprocess.all.2015.12.23-forC.txt";
-	else 	if (_dataSevereCases == 1)		inputFileName = "data.branchingprocess.severe.2015.12.23-forC.txt";
-	else									inputFileName = "data.branchingprocess.all.nocluster44.2015.12.23-forC.txt";
-
+	inputFileName = "MERS_forCpp.txt"; 
 	return inputFileName; 
 }
 
