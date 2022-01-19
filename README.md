@@ -18,7 +18,9 @@ subdirectory [R](./R), which also contains scripts to build batch files of large
 
 ## Data
 
-The directory [Data](./Data) contains the anonymised line list data required to replicate our results. 
+The directory [Data](./Data) contains the anonymised line list data required to replicate our results.
+If running elsewhere (e.g. a cluster), then ensure there is a folder named `Data` within the directory
+where the executable is located.
 
 ## Running
 
@@ -52,16 +54,17 @@ Example parameter files are provided in the directory [ParamFiles](./ParamFiles)
 The features specified in the parameter files 
 produce an output string that identifies the features present in that model run. 
 This output string is then included within all output file names. 
-The output strings cannot reasonably be interpretted without reference to either the C++ function 
-`StructureDefs.h::Housekeeping_Struct::CreateOutputString`, 
-or the R function `DirectoriesEtc.R::ChooseOutputString`.
+The output strings cannot interpretted without world-class guesswork, or reference to either the C++ function 
+`ChooseScenarioName` in [/MERS_VacTrees/InputOutput.cpp](./MERS_VacTrees/InputOutput.cpp), 
+or the R function `ChooseOutputString` in [R/DirectoryFunctions.R](./R/DirectoryFunctions.R).
 
 ## Output
 
 All model outputs are `.txt` files. 
 If run locally, model outputs are by default stored in 
 [Output](./Output), although outputs are untracked by git as collectively
-they can be quite large. 
+they can be quite large. If running elsewhere (e.g. a cluster), then ensure there is a folder named `Output` within the directory
+where the executable is located.
 
 The folder [R](./R) contains scripts to process and plot model output. By default, these scripts
 expect model output to be located in [Output](./Output). They further use the R package `here` and expect the working

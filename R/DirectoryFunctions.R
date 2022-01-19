@@ -1,7 +1,4 @@
 
-##### ===== ..... ##### ===== ..... ##### ===== ..... ##### ===== ..... ##### ===== ..... ##### ===== ..... ##### ===== ..... ##### ===== ..... ##### ===== ..... ##### ===== .....  
-##### after everything put in a data frame
-
 PrintToDesiredPrecision = function(Vec, ndigits = 2) ### e.g. if Vec = 0.2 and ndigits = 3, will print "0.200"
 {
 	sprintf(paste0("%.", ndigits, "f"), Vec)
@@ -53,12 +50,8 @@ ChooseOutputString = function(MR, StringPrefix = "", Folder = FALSE, n_digits = 
 DefineModelRuns = function( 
 		
 		RemoveDuplicates 			= TRUE											, 
-		### will likely want these soon. Irrelevant while you're still setting up. Will need to import relevant code from Dengue project
 		IncludeCompletedRunsOnly 	= FALSE											, 
 		NewRunsOnly					= FALSE											,
-		#UpdateOldRunsOnly			= FALSE											,
-		#OverwriteExistingModelRuns 	= TRUE											, 
-		#FromDateAndTime				= NULL											,
 		
 		VacCampStrategies						= "REACTIVE"							,
 		ReactLevels								= c("HOSPITAL")							, #c("HOSPITAL", "REGIONAL", "NATIONAL")
@@ -100,9 +93,6 @@ DefineModelRuns = function(
 	# remove scenarios where neither humans nor camels included
 	ModelRuns = ModelRuns[!(ModelRuns$Efficacy_Start == 0 & ModelRuns$Efficacy_CamelControls == 0), ]
 	
-	# remove scenarios that are reactive but where camels are included
-	#ModelRuns = ModelRuns[!(ModelRuns$VacCampStrategy == "REACTIVE" & ModelRuns$Efficacy_CamelControls > 0), ]
-	
 	# remove undefined combinations (ReactLevel irrelevant for PROACTIVE)
 	ModelRuns = ModelRuns[!(ModelRuns$VacCampStrategy == "PROACTIVE" & ModelRuns$ReactLevel != "HOSPITAL"), ]
 	
@@ -120,18 +110,9 @@ DefineModelRuns = function(
 	
 	#### Remove incomplete runs, if you want (e.g. useful to not compare runs you haven't done)
 	if (IncludeCompletedRunsOnly) 	ModelRuns = ModelRuns[file.exists(file.path(CppOutputDirectory, paste0("CF_Chains_", ModelRuns$OutputFolderNames, ".txt"))), ] ### _underscore after ParameterChainOutput depends on Folder argument in ChooseOutputString function called above.
-#	#### Remove runs you've already done, if you want (e.g. good when running stuff where source code unchanged)
-#	if (NewRunsOnly)				ModelRuns = ModelRuns[!file.exists(file.path(CppOutputDirectory, paste0("CF_Chains_"			, ModelRuns$OutputFolderNames, ".txt"))), ]
+	#### Remove runs you've already done, if you want (e.g. good when running stuff where source code unchanged)
 	if (NewRunsOnly)				ModelRuns = ModelRuns[!file.exists(file.path(CppOutputDirectory, paste0("CF_EpiCurves_Deaths_"	, ModelRuns$OutputFolderNames, ".txt"))), ]
-	
-	
-#	#### Only include runs you've already done, if you want (e.g. good when updating runs where source code has changed)
-#	if (UpdateOldRunsOnly)			ModelRuns = ModelRuns[file.exists(paste0(CppRootDirectory, "Output", slash(), "ParameterChainOutput_" , ModelRuns$OutputFolderNames, ".txt")), ]
-	#### .... Then remove the completed runs you don't want to overwrite. Check if posterior folder (say) exists. 
-
-	if (NewRunsOnly			) warning("DefineModelRuns: NewRunsOnly\nDefineModelRuns: NewRunsOnly\nDefineModelRuns: NewRunsOnly\n")
-#	if (UpdateOldRunsOnly	) warning("DefineModelRuns: UpdateOldRunsOnly\nDefineModelRuns: UpdateOldRunsOnly\nDefineModelRuns: UpdateOldRunsOnly\n")
-#	if (dim(ModelRuns)[1] == 0) stop("DefineModelRuns Error: ModelRuns data.frame empty. Is NewRunsOnly on unintentionally?")
+	if (NewRunsOnly) 				warning("DefineModelRuns: NewRunsOnly\nDefineModelRuns: NewRunsOnly\nDefineModelRuns: NewRunsOnly\n")
 	
 	return(ModelRuns)
 }
