@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Libraries.h"
-#include "DJL_Structs.h"
+#include "Structs.h"
 
 
 bool FileExists(string FileName);

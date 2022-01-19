@@ -4,7 +4,7 @@
 #include "DataStructure.h"
 #include "randlib_par.h"
 #include "omp.h"
-#include "DJL_Structs.h"
+#include "Structs.h"
 #include "Likelihood.h"
 #include "Globals.h"
 #include "InputOutput.h"
