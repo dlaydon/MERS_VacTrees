@@ -6,5 +6,4 @@
 ~*.pptx
 ParamFiles/
 *.png
-Plots/
 .vs/

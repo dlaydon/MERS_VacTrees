@@ -24,7 +24,6 @@ void loadAndInitializeData(string fileName, ModelRun& MR, bool printData);
 
 void WriteModelMetaData(AllOutput& OUTPUT, ModelRun& MR, FileStrings_Struct FileStrings, double delta, double kRinit, double pDetectIndex, double kIntro);  //// unseen "arguments" are various global variables, e.g. _spatialLevel
 std::string Choose_Simon_ScenarioName(ModelRun& MR, double kIntro); //// unseen "arguments" are various global variables, e.g. _spatialLevel
-std::string Choose_InputFileName(ModelRun& MR); 
 
 template <typename T>
 std::string ToStringWithPrecision(const T a_value, const int n); 

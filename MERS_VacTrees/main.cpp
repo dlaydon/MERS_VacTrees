@@ -610,15 +610,10 @@ int main(int argc, char *argv[])
 {
 	//// wrapper of runMCMCRGeneration (which itself is a wrapper of runMCMC function), that sets up various "scenario" variables 
 	ModelRun MR; 
-	if (MR.RunOnCluster == false)
-		std::cout << "MR.RunOnCluster == false" << std::endl;
 	fflush(stderr);	fflush(stdout);
 
-	if (MR.RunOnCluster)
-	{
-		string pParamFileName = argv[1];
-		ReadInParams(MR, pParamFileName);
-	}
+	string pParamFileName = argv[1];
+	ReadInParams(MR, pParamFileName);
 	fflush(stderr);	fflush(stdout);
 	MR.init();
 	CorrectAndProcessInputParams(MR); 
@@ -659,9 +654,9 @@ int main(int argc, char *argv[])
 	if (_cvParam == 1) kRinit = 1. / pow(kRinit, 0.5);
 	double delta			= 0;
 
-	//// Choose ScenarioName and input file name. 
+	//// Choose ScenarioName 
 	string Simon_scenarioName		= Choose_Simon_ScenarioName	(MR, kIntro)	; 	std::cout << "Simon_scenarioName = "	<< Simon_scenarioName	<< std::endl;
-	string inputFileName			= Choose_InputFileName		(MR)			; 	std::cout << "inputFileName = "			<< inputFileName		<< std::endl;
+	string inputFileName			= "MERS_forCpp.txt"							; 	std::cout << "inputFileName = "			<< inputFileName		<< std::endl;
 	string DJLScenarioName			= Choose_DJL_scenarioName	(MR)			; 	std::cout << "DJLScenarioName = "		<< DJLScenarioName		<< std::endl;
 
 	//// AssignNumber of Hospitals & regions (global variables)
@@ -670,9 +665,9 @@ int main(int argc, char *argv[])
 
 	//// File paths
 	FileStrings_Struct FileStrings; 
-	FileStrings.init (MR.RunOnCluster, Simon_scenarioName, inputFileName, DJLScenarioName);
+	FileStrings.init (Simon_scenarioName, inputFileName, DJLScenarioName);
 	AllOutput OUTPUT;
-	OUTPUT.init(MR.RunOnCluster, FileStrings);
+	OUTPUT.init(FileStrings);
 
 	///// Write model meta data. 
 
