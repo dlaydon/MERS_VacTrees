@@ -132,7 +132,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DataStructure.h" />
-    <ClInclude Include="DJL_Structs.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="InputOutput.h" />
     <ClInclude Include="Libraries.h" />
@@ -140,6 +139,7 @@
     <ClInclude Include="Macros.h" />
     <ClInclude Include="MCMC.h" />
     <ClInclude Include="randlib_par.h" />
+    <ClInclude Include="Structs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Globals.cpp" />

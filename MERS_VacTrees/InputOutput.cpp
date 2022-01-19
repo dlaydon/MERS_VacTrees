@@ -3,7 +3,7 @@
 #include "Globals.h"
 #include "Likelihood.h"
 #include "MCMC.h"
-#include "DJL_Structs.h"
+#include "Structs.h"
 #include "Macros.h"
 
 VaccCampaignStrategy	Convert_VaccCampaignStrategy_FromString	(const std::string& OptionString)
