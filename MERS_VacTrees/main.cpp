@@ -610,15 +610,10 @@ int main(int argc, char *argv[])
 {
 	//// wrapper of runMCMCRGeneration (which itself is a wrapper of runMCMC function), that sets up various "scenario" variables 
 	ModelRun MR; 
-	if (MR.RunOnCluster == false)
-		std::cout << "MR.RunOnCluster == false" << std::endl;
 	fflush(stderr);	fflush(stdout);
 
-	if (MR.RunOnCluster)
-	{
-		string pParamFileName = argv[1];
-		ReadInParams(MR, pParamFileName);
-	}
+	string pParamFileName = argv[1];
+	ReadInParams(MR, pParamFileName);
 	fflush(stderr);	fflush(stdout);
 	MR.init();
 	CorrectAndProcessInputParams(MR); 
@@ -670,9 +665,9 @@ int main(int argc, char *argv[])
 
 	//// File paths
 	FileStrings_Struct FileStrings; 
-	FileStrings.init (MR.RunOnCluster, Simon_scenarioName, inputFileName, DJLScenarioName);
+	FileStrings.init (Simon_scenarioName, inputFileName, DJLScenarioName);
 	AllOutput OUTPUT;
-	OUTPUT.init(MR.RunOnCluster, FileStrings);
+	OUTPUT.init(FileStrings);
 
 	///// Write model meta data. 
 

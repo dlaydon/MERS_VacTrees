@@ -433,7 +433,6 @@ void WriteModelMetaData(AllOutput &OUTPUT, ModelRun &MR, FileStrings_Struct File
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.OutputTreesEvery	) << "\t" << MR.OutputTreesEvery	<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.NumCFsPerTree		) << "\t" << MR.NumCFsPerTree		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.StoreEvery			) << "\t" << MR.StoreEvery			<< std::endl;
-	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.RunOnCluster		) << "\t" << MR.RunOnCluster		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.DJL_InputData		) << "\t" << MR.DJL_InputData		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.max_threads			) << "\t" << MR.max_threads			<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.seed1				) << "\t" << MR.seed1				<< std::endl;
@@ -519,12 +518,6 @@ std::string Choose_Simon_ScenarioName	(ModelRun &MR, double kIntro) //// unseen 
 
 	return Simon_scenarioName;
 }
-std::string Choose_InputFileName		(ModelRun &MR)
-{
-	string inputFileName;
-	inputFileName = "MERS_forCpp.txt"; 
-	return inputFileName; 
-}
 
 template <typename T>
 std::string ToStringWithPrecision(const T a_value, const int n = 2)
@@ -569,7 +562,6 @@ std::string Choose_DJL_scenarioName	(ModelRun& MR)
 		else if (MR.Vaccinate_HCW			)	DJL_ScenarioName = DJL_ScenarioName + "_vHCW"		;
 	}
 
-	if (!MR.RunOnCluster) DJL_ScenarioName = DJL_ScenarioName + "_Dummy";
 	return DJL_ScenarioName; 
 }
 

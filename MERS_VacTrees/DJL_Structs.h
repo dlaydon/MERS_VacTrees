@@ -196,18 +196,16 @@ struct FileStrings_Struct {
 	string Chains, IndividualR, Infector, ClusterR, ClusterReductionR, SimulCluster, Tree, Tree_CF, CF_Chains, CF_EpiCurves, CF_EpiCurves_Deaths;
 	string MetaData; 
 	string InitParamValues;
-	bool RunOnCluster; 
 
-	void init(bool RunOnClusterArg, string scenarioNameArg, string inputFileNameArg, string DJLscenarioNameArg)
+	void init(string scenarioNameArg, string inputFileNameArg, string DJLscenarioNameArg)
 	{
 		//// record argument variables. 
 		inputFileName			= inputFileNameArg; 
-		RunOnCluster			= RunOnClusterArg;
 		Simon_scenarioName		= scenarioNameArg;
 		DJL_scenarioName		= DJLscenarioNameArg; 
 
-		pathInput	= "Data\\";
-		pathOutput	= "Output\\";
+		pathInput	= "..\\..\\Data\\"	;
+		pathOutput	= "..\\..\\Output\\";
 		inputFile	= pathInput + inputFileName;
 
 		string CombinedScenarioName = Simon_scenarioName + DJL_scenarioName;
@@ -242,7 +240,7 @@ struct AllOutput {
 	ofstream MetaData				; bool Write_MetaData				= true;
 	ofstream InitParamValues		; bool Write_InitParamValues		= true;
 		
-	void init(bool RunOnCluster, FileStrings_Struct FileStrings)
+	void init(FileStrings_Struct FileStrings)
 	{
 		if (Write_Chains				) Chains				.open(FileStrings.Chains				);
 		if (Write_IndividualR			) IndividualR			.open(FileStrings.IndividualR			);
@@ -272,7 +270,6 @@ enum class ReactiveLevel {
 
 struct ModelRun { //// Set of housekeeping variables
 
-	bool RunOnCluster		= true;
 	bool DJL_InputData		= true;
 
 	int NumIterations			= 11000; 
