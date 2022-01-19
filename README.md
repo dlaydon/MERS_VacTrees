@@ -1,67 +1,56 @@
-# Dengue vaccine trial survival model
+# MERS-CoV vaccine impact counterfactual tree model
 
-This repository contains all code for the Bayesian survival analysis of the efficacy profile of 
-the Sanofi-Pasteur CYD-TDV dengue vaccine
-(Dengvaxia), developed primarily by Daniel J. Laydon and Neil M. Ferguson of the MRC Centre
-for Global Infectious Disease Analysis at Imperial College, London. Full model details are available in 
-- <https://elifesciences.org/articles/65131>
+This repository contains all code for the Bayesian counterfactual analysis of the impact of 
+a potential MERS-CoV vaccine, developed primarily by Daniel J. Laydon, and Neil M. Ferguson of the MRC Centre
+for Global Infectious Disease Analysis at Imperial College, London, and Simon Cauchemez of the Institut Pasteur, Paris. 
+The model assesses vaccine impact through the generation and "pruning" of inferred transmission trees, 
+("who-infected-whom") analysis. The repository also contains code to compare various vaccination campaign strategies.
+Full details are available at ADD LINK.
 
 
 ## IMPORTANT NOTES
-
-:warning: We are not at liberty to share the underlying individual-level data from each trial, as 
-it is proprietary and belongs to Sanofi-Pasteur. 
-However, we have provided simulated trial data that approximately preserves case-counts
-across multiple strata. When our model is run on this simulated
-data, our analysis is largely reproduced. 
 
 :warning: Parameter files and code are named quite esoterically and may be difficult to interpret. 
 Updating the code to make it more easily interpretable and user-friendly is a work-in-progress.
 
 ## Building
 
-The model is written in C++, using OpenMP to improve performance on multi-core processors. 
-C++ source and header files are located in the subdirectory [DengVaxSurvival](./DengVaxSurvival), 
+The model is written in C++. 
+C++ source and header files are located in the subdirectory [MERS_VacTrees](./MERS_VacTrees), 
 ready for loading and building from Visual Studio. R output processing code can be found in the 
-subdirectory [R](./R). 
+subdirectory [R](./R), which also contains scripts to build batch files of large cluster jobs. 
 
-## Simulated sample data
+## Data
 
-The directory [ParamFiles/Data](./ParamFiles/Data) contains simulated sample data 
-for our default model (`SimData.txt`), and for models that separate cases by disease severity 
-(`SimData_Hosp.txt` and `SimData_Severe.txt`), as well as models 
-without serotype effects (`SimData_NoSerotype.txt`). 
+The directory [Data](./Data) contains the anonymised line list data required to replicate our results. 
 
 ## Running
 
-The target executable of the C++ source code is named `DengVaxSurvival.exe`, which takes a single 
-command line argument specifying a parameter file. So the syntax for running the executable is 
+The target executable of the C++ source code is named `MERS_VacTrees.exe`, which takes a single 
+command line argument specifying a parameter file. The syntax for running the executable is 
 
-`DengVaxSurvival.exe Params_ParticularModelSettings.txt`. 
+`MERS_VacTrees.exe Params_ParticularModelSettings.txt`. 
 
-The code is heavily parallelized and (broadly) will run faster with more cores, ideally on a 
-high-performance cluster. However the model can also be run locally if the source code is 
-recompiled having turned off/commented out two lines in the header file Macros.h, namely 
-`#define USE_CLUSTER` and `#define USE_COMMAND_LINE`. 
-If run locally, we have set number of cores at 6 (in `main.cpp`), which again can be changed if desired. 
+The code runs reasonably fast on a single core. However the results of our analysis comprise several thousand 
+individual model runs, and so running multiple jobs on a high-performance cluster is strongly recommended. 
+However the model can also be run locally. 
+If the source code is recompiled having 
+set one variable, `UseCommandLine` in `Structs::ModelRun::UseCommandLine` to `false`, then a parameter file is not 
+required (this is mostly useful for debugging). Otherwise if `UseCommandLine` is set to `true`, then 
+parameter values in `Structs::ModelRun` will be overwritten by values in the parameter file.
 
-Note that OpenMP compiled executables on Windows will typically rely on a `.dll` file, provided with 
-the compiler, or with a runtime environment. For convenience, compiled executables, and the 
-accompanying `.dll` file are included in the [bin](./bin) folder. If you rebuild the code, you will need to 
-look for the `.dll` matching your compiler. The location for Visual Studio may be similar to
-`VC\Redist\MSVC\14.28.29325\x64\Microsoft.VC142.OpenMP` within the folder 
-`C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\`. 
-
-We have provided example batch (`.bat`) files to reproduce our main model (`Example_MainModel.bat`)
-which includes serotype and age effects, and other model variants that use the 
-parameter files detailed below.
+For convenience, compiled executables will output to the [x64/Release](./x64/Release) folder 
+(although this can be changed by specifying a different platform and configuration in Visual Studio, 
+or by changing the project properties)
+ 
+We have provided example batch (`.bat`) files to reproduce an particular "proactive" scenario (`Example_Proactive.bat`)
+and an example "reactive" scenario (`Example_Reactive.bat`), 
+as well as the script [R/MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R)
 
 ## Parameter files
 
 The executable reads in a parameter file, named `Params_ParticularModelSettings.txt`, 
-that govern which features are turned on or off,
-(initial) model parameter values, and the outputs tha are required,
-(e.g. MCMC chains, augmented data, survival curves, attack rates, hazard ratios, seroprevalence etc.).
+that govern which features are turned on or off.
 Example parameter files are provided in the directory [ParamFiles](./ParamFiles).
 
 By default, the features specified in the parameter files 
