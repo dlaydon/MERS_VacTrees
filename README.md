@@ -45,12 +45,12 @@ or by changing the project properties). The actual executable is not tracked by 
 
 The executable reads in a parameter file, named `Params_ParticularModelSettings.txt`, 
 that govern which features are turned on or off.
-Example parameter files are provided in the directory [ParamFiles](./ParamFiles).
+Parameter files are generated using the script [R/MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R).
 
 The features specified in the parameter files 
 produce an output string that identifies the features present in that model run. 
 This output string is then included within all output file names. 
-The output strings cannot interpretted without world-class guesswork, or reference to either the C++ function 
+The output strings cannot be interpretted without world-class guesswork, or reference to either the C++ function 
 `ChooseScenarioName` in [/MERS_VacTrees/InputOutput.cpp](./MERS_VacTrees/InputOutput.cpp), 
 or the R function `ChooseOutputString` in [R/DirectoryFunctions.R](./R/DirectoryFunctions.R).
 
