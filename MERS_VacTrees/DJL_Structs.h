@@ -206,17 +206,9 @@ struct FileStrings_Struct {
 		Simon_scenarioName		= scenarioNameArg;
 		DJL_scenarioName		= DJLscenarioNameArg; 
 
-		if (RunOnCluster)
-		{
-			pathInput	= "Data\\";
-			pathOutput	= "Output\\";
-		}
-		else
-		{
-			pathInput	= "C:\\Users\\dlaydon\\Dropbox (SPH Imperial College)\\MERS\\Data\\";
-			pathOutput	= "C:\\Users\\dlaydon\\Dropbox (SPH Imperial College)\\MERS\\Output\\";
-		}		
-		inputFile			= pathInput		+ inputFileName;
+		pathInput	= "Data\\";
+		pathOutput	= "Output\\";
+		inputFile	= pathInput + inputFileName;
 
 		string CombinedScenarioName = Simon_scenarioName + DJL_scenarioName;
 
