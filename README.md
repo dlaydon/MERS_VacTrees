@@ -102,19 +102,22 @@ age-specific seroprevalence) is by default stored in
 they can be quite large. 
 
 The folder [R](./R) contains scripts to process and plot model output. By default, these scripts
-expect model output to be located in [ParamFiles/Output](./ParamFiles/Output).
+expect model output to be located in [Output](./Output). They further use the R package `here` and expect the working
+directory to be the top level of the git repository (i.e. whereever the .git is located).
+
+## Workflow
+
+- Compile executable (`MERS_VacTrees.exe`) using Visual Studio.
+- Create batch file and parameter files for collection of jobs/model runs using [R/MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R)
 
 
 ### Relevant papers
 
-The following papers are relevant to the model and trial data. Please note that some of them
+The following papers are relevant to the model. Please note that some of them
 may require a subscription.
 
-- <https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(12)61428-7/fulltext>
-- <https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(14)61060-6/fulltext>
-- <https://www.nejm.org/doi/10.1056/NEJMoa1411037?url_ver=Z39.88-2003&rfr_id=ori%3Arid%3Acrossref.org&rfr_dat=cr_pub++0www.ncbi.nlm.nih.gov>
-- <https://www.nejm.org/doi/full/10.1056/nejmoa1506223>
-- <https://science.sciencemag.org/content/353/6303/1033.abstract>
+- <https://www.pnas.org/content/113/32/9081>
+- <https://www.science.org/doi/10.1126/sciadv.aba8399>
 
 ## Copyright and Licensing
 
