@@ -74,7 +74,6 @@ void ReadInParams			(ModelRun &MR, string pParamFileName)
 				 if (param_name == "NumIterations"					)	MR.NumIterations				= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "BurnIn"							)	MR.BurnIn						= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "StoreEvery"						)	MR.StoreEvery					= std::stoi(param_value_string);	// int / bool
-			else if (param_name == "DJL_InputData"					)	MR.DJL_InputData				= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "OutputTreesEvery"				)	MR.OutputTreesEvery				= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "Efficacy_Start"					)	MR.Efficacy_Start				= std::stod(param_value_string);	// double
 			else if (param_name == "VaccineDuration"				)	MR.VaccineDuration				= std::stod(param_value_string);	// double
@@ -235,8 +234,7 @@ void loadAndInitializeData	(string fileName, ModelRun& MR, bool printData = fals
 	iFile.seekg(0, ios_base::beg); // Back to the start
 
 	// Initialize data
-	_numberOfCases			= lineCount + 1; // Community is case 0
-	if (MR.DJL_InputData)	_numberOfCases = lineCount - 1;
+	_numberOfCases = lineCount - 1;
 
 	_nameCase				= vector<int>(_numberOfCases, 0);
 	_onset					= vector<int>(_numberOfCases, 0);
@@ -262,40 +260,23 @@ void loadAndInitializeData	(string fileName, ModelRun& MR, bool printData = fals
 	_Age					= vector<int> (_numberOfCases, 0); 
 
 	// Read again to load data
-	if (MR.DJL_InputData)
+	int NumDataVariables = 10; 
+	std::vector<string> DataNames(NumDataVariables, "");
+	for (int VarName = 0; VarName < NumDataVariables; VarName++) iFile >> DataNames[VarName];
+	for (int VarName = 0; VarName < NumDataVariables; VarName++) std::cout << " " << DataNames[VarName]; 
+	std::cout << std::endl; 
+	for (int iCase = 1; iCase < _numberOfCases; ++iCase)
 	{
-		int NumDataVariables = 10; 
-		std::vector<string> DataNames(NumDataVariables, "");
-		for (int VarName = 0; VarName < NumDataVariables; VarName++) iFile >> DataNames[VarName];
-		for (int VarName = 0; VarName < NumDataVariables; VarName++) std::cout << " " << DataNames[VarName]; 
-		std::cout << std::endl; 
-	}
-	if (MR.DJL_InputData)
-	{
-		for (int iCase = 1; iCase < _numberOfCases; ++iCase)
-		{
-			iFile >> _nameCase	[iCase];
-			iFile >> _onset		[iCase];
-			iFile >> _hospital	[iCase];			// hospital
-			iFile >> _region	[iCase];			// region
-			iFile >> dummy;							// city			
-			iFile >> _HealthCareWorker[iCase];		// HCW
-			iFile >> _Sex[iCase];					// Sex
-			iFile >> _Dead[iCase];					// Dead
-			iFile >> _Symptomatic[iCase];			// Symptomatic
-			iFile >> _Age[iCase];					// Age in years
-		}
-	}
-	else
-	{
-		for (int iCase = 1; iCase < _numberOfCases; ++iCase)
-		{
-			iFile >> _nameCase[iCase];
-			iFile >> _onset[iCase];
-			iFile >> _hospital[iCase];		// cluster
-			iFile >> dummy;					// city			//// hospital.city in line list
-			iFile >> _region[iCase];		// region
-		}
+		iFile >> _nameCase	[iCase];
+		iFile >> _onset		[iCase];
+		iFile >> _hospital	[iCase];			// hospital
+		iFile >> _region	[iCase];			// region
+		iFile >> dummy;							// city			
+		iFile >> _HealthCareWorker[iCase];		// HCW
+		iFile >> _Sex[iCase];					// Sex
+		iFile >> _Dead[iCase];					// Dead
+		iFile >> _Symptomatic[iCase];			// Symptomatic
+		iFile >> _Age[iCase];					// Age in years
 	}
 	for (int iCase = 1; iCase < _numberOfCases; ++iCase) _onset_week[iCase] = _onset[iCase] / 7; 
 
@@ -434,7 +415,6 @@ void WriteModelMetaData(AllOutput &OUTPUT, ModelRun &MR, FileStrings_Struct File
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.NumCFsPerTree		) << "\t" << MR.NumCFsPerTree		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.StoreEvery			) << "\t" << MR.StoreEvery			<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.UseCommandLine		) << "\t" << MR.UseCommandLine		<< std::endl;
-	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.DJL_InputData		) << "\t" << MR.DJL_InputData		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.max_threads			) << "\t" << MR.max_threads			<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.seed1				) << "\t" << MR.seed1				<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.seed2				) << "\t" << MR.seed2				<< std::endl;

@@ -270,8 +270,7 @@ enum class ReactiveLevel {
 
 struct ModelRun { //// Set of housekeeping variables
 
-	bool UseCommandLine		= false; // Reading in paramter file from the command line (i.e. with UseCommandLine == true) will overide the parameters below. Otherwise can set them here. 
-	bool DJL_InputData		= true;
+	bool UseCommandLine		= false; // Reading in parameter file from the command line (i.e. with UseCommandLine == true) will overide the parameters below. Otherwise can set them here. 
 
 	int NumIterations			= 11000; 
 	int BurnIn					= 1000; 
