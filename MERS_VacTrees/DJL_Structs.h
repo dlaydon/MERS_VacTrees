@@ -270,7 +270,7 @@ enum class ReactiveLevel {
 
 struct ModelRun { //// Set of housekeeping variables
 
-	bool UseCommandLine		= false; 
+	bool UseCommandLine		= false; // Reading in paramter file from the command line (i.e. with UseCommandLine == true) will overide the parameters below. Otherwise can set them here. 
 	bool DJL_InputData		= true;
 
 	int NumIterations			= 11000; 
@@ -286,8 +286,6 @@ struct ModelRun { //// Set of housekeeping variables
 	int ** CF_EpiCurves_Internal;						//// indexed by i) iteration; ii) week. Internal version of CF_EpiCurves above. That quantity is outputted. This quantity is used during runtime.
 	int ** CF_EpiCurves_Deaths_Internal;				//// indexed by i) iteration; ii) week. Internal version of CF_EpiCurves_Deaths above. That quantity is outputted. This quantity is used during runtime.
 
-	//vector<double> ProportionCasesAverted;	//// indexing depends on NumCFsPerTree. If NumCFsPerTree = 1, then ProportionCasesAverted	indexed by iteration. Otherwise by iteration * NumCFsPerTree + CFnum
-	//vector<double> NumberCasesAverted;		//// indexing depends on NumCFsPerTree. If NumCFsPerTree = 1, then NumberCasesAverted		indexed by iteration. Otherwise by iteration * NumCFsPerTree + CFnum
 	std::vector<string> CF_Names;				//// names of counterfactual quantites
 
 	//// counterfactual parameters. Set as inputs and unchanged throughout MCMC runtime. 
@@ -315,9 +313,6 @@ struct ModelRun { //// Set of housekeeping variables
 
 	void AddToCF_Quantities(std::vector<string>& Names, string NameOfThisQuantity, int& CumulativeNumQuantities, int& IndexToSet)
 	{
-		//CF_Names.push_back("NumCasesAverted");
-		//QIs.NumAverted_QI = NumQuantities++; 
-		//// code below generalises example above. 
 		Names.push_back(NameOfThisQuantity);
 		IndexToSet = CumulativeNumQuantities++;
 	}
