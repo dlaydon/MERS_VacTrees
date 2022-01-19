@@ -1,0 +1,1 @@
+job submit /scheduler:fi--didemrchnb /jobtemplate:GeneralNodes /numcores:1-1 /singlenode:true /workdir:\\fi--didenas1-app\dengue\Danny\MERS /stdout:STDERROUTs\stdout_Reactive_WithCamels_%1 /stderr:STDERROUTs\stderr_Reactive_WithCamels_%1 MERS_Vac.exe %1
