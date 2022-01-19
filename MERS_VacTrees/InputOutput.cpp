@@ -249,7 +249,7 @@ void loadAndInitializeData	(string fileName, ModelRun& MR, bool printData = fals
 	_generation				= vector<int>(_numberOfCases, -1);
 	_secondaryCases			= vector<set<int>>(_numberOfCases, set<int>());
 
-	//// DJL containters
+	//// containters
 	_vaccinated				= vector<bool>(_numberOfCases, 0);
 	_protected				= vector<bool>(_numberOfCases, 0);
 	_DeleteCase_CF			= vector<bool>(_numberOfCases, 0);
@@ -419,7 +419,7 @@ void WriteModelMetaData(AllOutput &OUTPUT, ModelRun &MR, FileStrings_Struct File
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.seed1				) << "\t" << MR.seed1				<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.seed2				) << "\t" << MR.seed2				<< std::endl;
 
-	//// DJL ModelRun
+	//// ModelRun
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Efficacy_Start				)	<< "\t" << MR.Efficacy_Start			<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Efficacy_Current			)	<< "\t" << MR.Efficacy_Current			<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Coverage					)	<< "\t" << MR.Coverage					<< std::endl;
