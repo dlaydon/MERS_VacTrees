@@ -6,7 +6,7 @@ for Global Infectious Disease Analysis at Imperial College, London, and Simon Ca
 The model assesses vaccine impact through the generation of inferred transmission trees, 
 ("who-infected-whom") analysis, and the "pruning" of these trees to consider counterfactuals. 
 The repository also contains code to compare various vaccination campaign strategies.
-Full details are available at ADD LINK.
+Full details are available at ADD LINK WHEN AVAILABLE.
 
 
 ## Building
@@ -45,18 +45,18 @@ or by changing the project properties). The actual executable is not tracked by 
 
 The executable reads in a parameter file, named `Params_ParticularModelSettings.txt`, 
 that govern which features are turned on or off.
-Parameter files are generated using the script [R/MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R).
+Parameter files are generated using the script [MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R).
 
 The features specified in the parameter files 
 produce an output string that identifies the features present in that model run. 
 This output string is then included within all output file names. 
 The output strings cannot be interpretted without world-class guesswork, or reference to either the C++ function 
-`ChooseScenarioName` in [/MERS_VacTrees/InputOutput.cpp](./MERS_VacTrees/InputOutput.cpp), 
-or the R function `ChooseOutputString` in [R/DirectoryFunctions.R](./R/DirectoryFunctions.R).
+`ChooseScenarioName` in [InputOutput.cpp](./MERS_VacTrees/InputOutput.cpp), 
+or the R function `ChooseOutputString` in [DirectoryFunctions.R](./R/DirectoryFunctions.R).
 
 We have provided example batch (`.bat`) files to reproduce "proactive" scenarios (`Proactive_WithCamels_Many.bat`)
 and "reactive" scenarios (`Reactive_WithCamels_Many.bat`) in the directory [ParamFiles](./ParamFiles), and others can 
-be made in the script [R/MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R)
+be made in the script [MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R)
 
 ## Output
 
@@ -75,11 +75,11 @@ Plots will be stored in [Plots](./Plots), although these are again untracked by 
 ## Workflow
 
 - Compile executable (`MERS_VacTrees.exe`) using Visual Studio.
-- Create batch file and parameter files for collection of jobs/model runs using [R/MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R).
-- Run above batch file.
-- When finished, summarise model output using [R/MakeOutputSummaryTable.R](./R/MakeOutputSummaryTable.R).
-- If desired, plot posteriors and chains of counterfactuals for individual model runs using [R/MakeIndividualRunPlots.R](./RMakeIndividualRunPlots.R).
-- Plot results using scripts with `Fig_`, `Figs_` or `Plot` prefix.
+- Create batch file and parameter files for collection of jobs/model runs using [MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R).
+- Ensure above batch file is located in same folder as executable. If it isn't, copy it to there. Run batch file.
+- When finished, summarise model output using [MakeOutputSummaryTable.R](./R/MakeOutputSummaryTable.R).
+- If desired, plot posteriors and chains of counterfactuals for individual model runs using [MakeIndividualRunPlots.R](./RMakeIndividualRunPlots.R).
+- Plot results using scripts with `Fig_`, `Figs_` or `Plot` prefixes.
 
 ### Relevant papers
 

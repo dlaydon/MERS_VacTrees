@@ -108,12 +108,6 @@ DefineModelRuns = function(
 	#### Remove duplicates
 	if (RemoveDuplicates)			ModelRuns = ModelRuns[!duplicated(ModelRuns$OutputFolderNames), ]
 	
-	#### Remove incomplete runs, if you want (e.g. useful to not compare runs you haven't done)
-	if (IncludeCompletedRunsOnly) 	ModelRuns = ModelRuns[file.exists(file.path(CppOutputDirectory, paste0("CF_Chains_", ModelRuns$OutputFolderNames, ".txt"))), ] ### _underscore after ParameterChainOutput depends on Folder argument in ChooseOutputString function called above.
-	#### Remove runs you've already done, if you want (e.g. good when running stuff where source code unchanged)
-	if (NewRunsOnly)				ModelRuns = ModelRuns[!file.exists(file.path(CppOutputDirectory, paste0("CF_EpiCurves_Deaths_"	, ModelRuns$OutputFolderNames, ".txt"))), ]
-	if (NewRunsOnly) 				warning("DefineModelRuns: NewRunsOnly\nDefineModelRuns: NewRunsOnly\nDefineModelRuns: NewRunsOnly\n")
-	
 	return(ModelRuns)
 }
 

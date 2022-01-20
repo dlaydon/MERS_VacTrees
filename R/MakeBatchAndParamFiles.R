@@ -25,26 +25,13 @@ source(file.path(R_ScriptDirectory, "DirectoryFunctions.R"))
 ### === 		Make "Single" Batch file. 
 ### === ### === ### === ### === ### === ### === ### === ### === ### === ### === ### === ### === ### === ### === ### === 
 
-WriteSingleBatchFiles = function(ManyANDSingleFileName, Nodes = "GeneralNodes", stderrlabel = "_%1", stdoutlabel = "_%1", 
-		Whole_Node = TRUE, NumCores = NULL, Exe_name = "MERS_Vac.exe", Exe_args = "%1", BatchOriginDir = "/workdir:\\\\fi--didenas1-app\\dengue\\Danny\\MERS", WRITE_FILES = TRUE, 
-		AddBatchNameToOutputStreams = TRUE)
+WriteSingleBatchFiles = function(ManyANDSingleFileName, Exe_name = "MERS_Vac.exe", Exe_args = "%1", WRITE_FILES = TRUE)
 {
 	if (Exe_name != "MERS_Vac.exe") warning("Exe_name != MERS_Vac.exe")
 	if (ManyANDSingleFileName == "") stop("Must Provide ManyANDSingleFileName argument")
 	
 	SingleBatchFileName = paste0(ManyANDSingleFileName, "_Single.bat")
-	
-	if (Whole_Node) NumNodes_SingleNode_string = " /numnodes:1 /singlenode:false" 		else
-					NumNodes_SingleNode_string = paste0(" /numcores:", NumCores, "-", NumCores, " /singlenode:true") 	
-	ClusterString 	= paste0("job submit /scheduler:fi--didemrchnb /jobtemplate:", Nodes, NumNodes_SingleNode_string)
-	
-	if (AddBatchNameToOutputStreams) stderr_BatchAddOn = ManyANDSingleFileName else stderr_BatchAddOn = ""
-	if (AddBatchNameToOutputStreams) stdout_BatchAddOn = ManyANDSingleFileName else stdout_BatchAddOn = ""
-	
-	stderrlabel = paste0("/stderr:STDERROUTs\\stderr_", stderr_BatchAddOn, stderrlabel) 
-	stdoutlabel = paste0("/stdout:STDERROUTs\\stdout_", stdout_BatchAddOn, stdoutlabel)
-	
-	LongString_single = paste(ClusterString, BatchOriginDir, stdoutlabel, stderrlabel, Exe_name, Exe_args)
+	LongString_single 	= paste(Exe_name, Exe_args)
 	if (WRITE_FILES) write.table(LongString_single, file = file.path(outputdirectory, SingleBatchFileName), row.names = F, col.names = F, quote = F, sep = "\t")
 }
 
@@ -89,13 +76,13 @@ WriteMultiBatchFile = function(ParamFileNames, ManyANDSingleFileName = ManySingl
 	ManyBatchFileName 		= paste0(ManyANDSingleFileName, "_Many.bat")
 	SingleBatchFileName 	= paste0(ManyANDSingleFileName, "_Single.bat")
 	
-	ManyBatchFileName <<- ManyBatchFileName
+	ManyBatchFileName 	<<- ManyBatchFileName
 	SingleBatchFileName <<- SingleBatchFileName
 	
 	MultiJobString = ""
 	for (ParamFileName in ParamFileNames)
 	{
-		CallString = paste("call", SingleBatchFileName, ParamFileName, "\n")
+		CallString = paste(SingleBatchFileName, ParamFileName, "\n")
 		MultiJobString = paste0(MultiJobString, CallString)
 	}
 	write.table(MultiJobString, file = file.path(outputdirectory, ManyBatchFileName),	row.names = F, col.names = F, quote = F, sep = "\t")
@@ -112,7 +99,7 @@ WriteMultiBatchFile = function(ParamFileNames, ManyANDSingleFileName = ManySingl
 ## ** -- ^^ PROACTIVE
 
 ManySingleFileName = "Proactive_WithCamels"
-ModelRuns = DefineModelRuns(NewRunsOnly = TRUE,
+ModelRuns = DefineModelRuns(
 		Efficacies_CamelControls = seq(0, 0.5, 0.1), ## 0 here refers to no camels, or equivalently camel interventions having zero efficacy.
 		VacCampStrategies = "PROACTIVE", ImplementationDelays = 0, ImmunityDelays = 0, 
 		Efficacies_Start = seq(0.00, 1, by = 0.05), ## 0 here refers to no humans, or equivalently human vaccines having zero efficacy.
@@ -121,7 +108,7 @@ ModelRuns = DefineModelRuns(NewRunsOnly = TRUE,
 dim(ModelRuns)
 str(ModelRuns)
 
-WriteSingleBatchFiles(ManyANDSingleFileName = ManySingleFileName, Whole_Node = FALSE, NumCores = 1)
+WriteSingleBatchFiles(ManyANDSingleFileName = ManySingleFileName)
 MR_index = 1
 for (MR_index in 1:dim(ModelRuns)[1]) WriteParamFile(ModelRun = ModelRuns[MR_index,])
 WriteMultiBatchFile(ParamFileNames)
@@ -135,7 +122,6 @@ warnings()
 
 ManySingleFileName = "Reactive_WithCamels"	
 ModelRuns = DefineModelRuns(
-		NewRunsOnly = FALSE, 
 		VacCampStrategies = "REACTIVE", 
 		Efficacies_CamelControls = seq(0.1, 0.5, 0.1),
 		ImplementationDelays = seq(0,28,2), 
@@ -146,7 +132,7 @@ ModelRuns = DefineModelRuns(
 dim(ModelRuns)
 str(ModelRuns)
 
-WriteSingleBatchFiles(ManyANDSingleFileName = ManySingleFileName, Whole_Node = FALSE, NumCores = 1)
+WriteSingleBatchFiles(ManyANDSingleFileName = ManySingleFileName)
 MR_index = 1
 for (MR_index in 1:dim(ModelRuns)[1]) WriteParamFile(ModelRun = ModelRuns[MR_index,])
 WriteMultiBatchFile(ParamFileNames)
