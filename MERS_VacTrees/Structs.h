@@ -271,8 +271,8 @@ struct ModelRun { //// Set of housekeeping variables
 
 	bool UseCommandLine		= true; // Reading in parameter file from the command line (i.e. with UseCommandLine == true) will overide the parameters below. Otherwise can set them here. 
 
-	int NumIterations			= 11000; 
-	int BurnIn					= 1000; 
+	int NumIterations			= 11000;	// slight misnomer in that it doesn't take account of StoreEvery below. MCMC will run for NumIterations * StoreEvery iterations, whereas counterfactual trees will be calculated NumIterations times.
+	int BurnIn					= 1000;		// see above but slight misnomer in that Burnin * StoreEvery is the real number of iterations considered as Burn in period.
 	int NumCFQuantities			= 0;	//// add to this as required
 	int NumCFEpiCurvestStats	= 4;	//// number of summary statistics for counterfactual epidemic curves (mean, median, lower CrI, upper CrI)
 	int OutputTreesEvery		= 100;	//// also output counterfactual trees every

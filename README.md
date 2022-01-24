@@ -1,11 +1,12 @@
 # MERS-CoV vaccine impact counterfactual tree model
 
-This repository contains all code for the Bayesian counterfactual analysis of the impact of 
-a potential MERS-CoV vaccine, developed primarily by Daniel J. Laydon, and Neil M. Ferguson of the MRC Centre
+This repository contains all code for the Bayesian counterfactual analysis of 
+potential MERS-CoV vaccine impact, 
+developed primarily by Daniel J. Laydon, and Neil M. Ferguson of the MRC Centre
 for Global Infectious Disease Analysis at Imperial College, London, and Simon Cauchemez of the Institut Pasteur, Paris. 
-The model assesses vaccine impact through the generation of inferred transmission trees, 
-("who-infected-whom") analysis, and the "pruning" of these trees to consider counterfactuals. 
-The repository also contains code to compare various vaccination campaign strategies.
+The model assesses vaccine impact inferring transmission trees, 
+("who-infected-whom") analysis, and then "pruning" these trees to generate counterfactuals. 
+The repository also contains code to assess and compare various vaccination campaign strategies.
 Full details are available at ADD LINK WHEN AVAILABLE.
 
 
@@ -19,8 +20,8 @@ subdirectory [R](./R), which also contains scripts to build batch files of large
 ## Data
 
 The directory [Data](./Data) contains the anonymised line list data required to replicate our results.
-If running elsewhere (e.g. a cluster), then ensure there is a folder named `Data` within the directory
-where the executable is located.
+If running elsewhere (e.g. a cluster), then please ensure there is a folder named `Data` within the directory
+where the executable is located. 
 
 ## Running
 
@@ -29,7 +30,9 @@ command line argument specifying a parameter file. The syntax for running the ex
 
 `MERS_VacTrees.exe Params_ParticularModelSettings.txt`. 
 
-The code runs reasonably fast on a single core. However the results of our analysis comprise several thousand 
+The code runs reasonably fast on a single core (between approximately 4 and 6 minutes 
+for 50,000 iterations when run on the dataset provided). 
+However the results of our analysis comprise several thousand 
 individual model runs, and so running multiple jobs in parallel on a high-performance cluster is strongly recommended, although
  the model can also be run locally if required. 
 If the source code is recompiled having 
@@ -67,16 +70,17 @@ they can be quite large. If running elsewhere (e.g. a cluster), then ensure ther
 where the executable is located.
 
 The folder [R](./R) contains scripts to process and plot model output. By default, these scripts
-expect model output to be located in [Output](./Output). They further use the R package `here` and expect the working
+expect model output to be located in [Output](./Output). 
+They further use the R package `here` and expect the working
 directory to be the top level of the git repository 
 (i.e. whereever the .git is located and the top-level of the Visual studio project).
 Plots will be stored in [Plots](./Plots), although these are again untracked by git.
 
 ## Workflow
 
-- Compile executable (`MERS_VacTrees.exe`) using Visual Studio.
+- Compile executable (`MERS_VacTrees.exe`).
 - Create batch file and parameter files for collection of jobs/model runs using [MakeBatchAndParamFiles.R](./R/MakeBatchAndParamFiles.R).
-- Ensure above batch file is located in same folder as executable. If it isn't, copy it to there. Run batch file.
+- Ensure above batch file is located in same folder as executable. If it isn't, copy it there. Run batch file.
 - When finished, summarise model output using [MakeOutputSummaryTable.R](./R/MakeOutputSummaryTable.R).
 - If desired, plot posteriors and chains of counterfactuals for individual model runs using [MakeIndividualRunPlots.R](./RMakeIndividualRunPlots.R).
 - Plot results using scripts with `Fig_`, `Figs_` or `Plot` prefixes.
