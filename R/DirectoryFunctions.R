@@ -41,6 +41,14 @@ ChooseOutputString = function(MR, StringPrefix = "", Folder = FALSE, n_digits = 
 		if (MR$Vaccinate_HCW				)	OutputString = paste0(OutputString, "_vHCW"								)
 	}
 	
+	if (MR$DataFilename != "MERS_forCpp.txt")
+	{
+		if (MR$DataFilename == "MERS_forCpp_JanJun2013.txt"	)	OutputString = paste0(OutputString, "_JanJun2013.txt"	) else
+		if (MR$DataFilename == "MERS_forCpp_JulDec2013.txt"	)	OutputString = paste0(OutputString, "_JulDec2013.txt"	) else
+		if (MR$DataFilename == "MERS_forCpp_2014.txt"		)	OutputString = paste0(OutputString, "_2014.txt"			) else
+																OutputString = paste0(OutputString, MR$DataFilename		)
+	}
+	
 	if (Folder) while (substr(OutputString, 1, 1) == "_") OutputString = sub("_", "", OutputString) ### i.e. don't want underscore as first character if doing the name of a folder, so remove it. 
 
 	return(OutputString)
@@ -50,8 +58,6 @@ ChooseOutputString = function(MR, StringPrefix = "", Folder = FALSE, n_digits = 
 DefineModelRuns = function( 
 		
 		RemoveDuplicates 			= TRUE											, 
-		IncludeCompletedRunsOnly 	= FALSE											, 
-		NewRunsOnly					= FALSE											,
 		
 		VacCampStrategies						= "REACTIVE"							,
 		ReactLevels								= c("HOSPITAL")							, #c("HOSPITAL", "REGIONAL", "NATIONAL")
@@ -63,6 +69,8 @@ DefineModelRuns = function(
 		# camels
 		Efficacies_CamelControls				= 0.0							,
 
+		DataFilenames							= "MERS_forCpp.txt"				,
+		
 		Coverages								= 1								,
 		ImplementationDelays					= 0								,
 		ImmunityDelays							= 0								,
@@ -82,6 +90,8 @@ DefineModelRuns = function(
 			
 			# camels
 			Efficacy_CamelControls						= Efficacies_CamelControls			,
+			
+			DataFilename								= DataFilenames						,
 			
 			Coverage									= Coverages							,
 			ImplementationDelay							= ImplementationDelays				,
