@@ -4,10 +4,10 @@ This repository contains all code for the Bayesian counterfactual analysis of
 potential MERS-CoV vaccine impact, 
 developed primarily by Daniel J. Laydon, and Neil M. Ferguson of the MRC Centre
 for Global Infectious Disease Analysis at Imperial College, London, and Simon Cauchemez of the Institut Pasteur, Paris. 
-The model assesses vaccine impact inferring transmission trees, 
+The model assesses vaccine impact by inferring transmission trees, 
 ("who-infected-whom") analysis, and then "pruning" these trees to generate counterfactuals. 
 The repository also contains code to assess and compare various vaccination campaign strategies.
-Full details are available at ADD LINK WHEN AVAILABLE.
+Full details are available at <https://www.medrxiv.org/content/10.1101/2022.04.06.22273497v1>.
 
 
 ## Building
@@ -83,13 +83,14 @@ Plots will be stored in [Plots](./Plots), although these are again untracked by 
 - Ensure above batch file is located in same folder as executable. If it isn't, copy it there. Run batch file.
 - When finished, summarise model output using [MakeOutputSummaryTable.R](./R/MakeOutputSummaryTable.R).
 - If desired, plot posteriors and chains of counterfactuals for individual model runs using [MakeIndividualRunPlots.R](./RMakeIndividualRunPlots.R).
-- Plot results using scripts with `Fig_`, `Figs_` or `Plot` prefixes.
+- Plot results using R scripts with `Fig_`, `Figs_` or `Plot` prefixes.
 
 ### Relevant papers
 
 The following papers are relevant to the model. Please note that some of them
 may require a subscription.
 
+- <https://www.medrxiv.org/content/10.1101/2022.04.06.22273497v1>
 - <https://www.pnas.org/content/113/32/9081>
 - <https://www.science.org/doi/10.1126/sciadv.aba8399>
 
@@ -98,7 +99,7 @@ may require a subscription.
 Source code is licensed under the GPLv3.
 
 It is Copyright Imperial College of Science, Technology and Medicine. The
-lead developers are Daniel J. Laydon and Neil M. Ferguson. 
+lead developers are Daniel J. Laydon, Simon Cauchemez and Neil M. Ferguson. 
 
 This repository includes code modified from
 [RANLIB](https://people.sc.fsu.edu/~jburkardt/c_src/ranlib/ranlib.html) which
