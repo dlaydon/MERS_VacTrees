@@ -290,51 +290,57 @@ void loadAndInitializeData	(string fileName, ModelRun& MR, bool printData = fals
 	//// containters
 	_vaccinated				= vector<bool>(_numberOfCases, 0);
 	_protected				= vector<bool>(_numberOfCases, 0);
+	_withinPruningWindow	= vector<bool>(_numberOfCases, false);
 	_DeleteCase_CF			= vector<bool>(_numberOfCases, 0);
 	_HealthCareWorker		= vector<int> (_numberOfCases, 0);
-	_Sex					= vector<int> (_numberOfCases, 0); 
 	_Dead					= vector<int> (_numberOfCases, 0); 
-	_Symptomatic			= vector<int> (_numberOfCases, 0); 
-	_Age					= vector<int> (_numberOfCases, 0); 
 
 	// Read again to load data
-	int NumDataVariables = 10; 
+	int NumDataVariables = 6; 
 	std::vector<string> DataNames(NumDataVariables, "");
 	for (int VarName = 0; VarName < NumDataVariables; VarName++) iFile >> DataNames[VarName];
 	for (int VarName = 0; VarName < NumDataVariables; VarName++) std::cout << " " << DataNames[VarName]; 
-	std::cout << std::endl; 
 	for (int iCase = 1; iCase < _numberOfCases; ++iCase)
 	{
 		iFile >> _nameCase	[iCase];
 		iFile >> _onset		[iCase];
 		iFile >> _hospital	[iCase];			// hospital
 		iFile >> _region	[iCase];			// region
-		iFile >> dummy;							// city			
 		iFile >> _HealthCareWorker[iCase];		// HCW
-		iFile >> _Sex[iCase];					// Sex
 		iFile >> _Dead[iCase];					// Dead
-		iFile >> _Symptomatic[iCase];			// Symptomatic
-		iFile >> _Age[iCase];					// Age in years
 	}
 	for (int iCase = 1; iCase < _numberOfCases; ++iCase) _onset_week[iCase] = _onset[iCase] / 7; 
+
+	_minDay = 0;	//*min_element(_onset.begin(), _onset.end());
+	_maxDay = *max_element(_onset.begin(), _onset.end());
+
+	// Calculate number of cases in pruning subset. (If not doing a pruning subset, this should equal _numberOfCases).
+	_numberOfCases_PruningSubset = 1; // initialize with reservoir
+	for (int iCase = 1; iCase < _numberOfCases; ++iCase)
+		if (_onset[iCase] >= MR.MinDay_Pruning && _onset[iCase] <= MR.MaxDay_Pruning)
+		{
+			_numberOfCases_PruningSubset++;
+			if (_Dead[iCase]) _numberOfDeaths_PruningSubset++;
+			_withinPruningWindow[iCase] = true;
+		}
+	std::cout << " _numberOfCases " << _numberOfCases << " _numberOfCases_PruningSubset " << _numberOfCases_PruningSubset << std::endl;
 
 	iFile.close();
 
 	// Find first cases in hospital, region and country
-	_FirstOnsetInHosp = vector<int>(_numberOfHospitals, 100000); //// i.e. initialize vector with arbitrarily large number
-	_FirstOnsetInRegion = vector<int>(_numberOfRegions, 100000); //// i.e. initialize vector with arbitrarily large number
-	_FirstOnsetInCountry = 100000; 
+	_FirstOnsetInHosp		= vector<int>(_numberOfHospitals, 100000); //// i.e. initialize vector with arbitrarily large number
+	_FirstOnsetInRegion		= vector<int>(_numberOfRegions, 100000); //// i.e. initialize vector with arbitrarily large number
+	_FirstOnsetInCountry	= 100000; 
 	_numberOfHCWs = 0;
 	for (int iCase = 1; iCase < _numberOfCases; ++iCase)
-	{
-		if (_onset[iCase] < _FirstOnsetInHosp[_hospital[iCase]]	)	_FirstOnsetInHosp[_hospital[iCase]] = _onset[iCase]; //// Find first case in each hospital. 
-		if (_onset[iCase] < _FirstOnsetInRegion[_region[iCase]]	)	_FirstOnsetInRegion[_region[iCase]] = _onset[iCase]; //// Find first case in each region. 
-		if (_onset[iCase] < _FirstOnsetInCountry				)	_FirstOnsetInCountry				= _onset[iCase]; //// Find first case in each region. 
-		if (_HealthCareWorker[iCase] == 1) _numberOfHCWs++; 
-	}
+		if (_withinPruningWindow[iCase])
+		{
+			if (_onset[iCase] < _FirstOnsetInHosp[_hospital[iCase]]	)	_FirstOnsetInHosp[_hospital[iCase]] = _onset[iCase]; //// Find first case in each hospital. 
+			if (_onset[iCase] < _FirstOnsetInRegion[_region[iCase]]	)	_FirstOnsetInRegion[_region[iCase]] = _onset[iCase]; //// Find first case in each region. 
+			if (_onset[iCase] < _FirstOnsetInCountry				)	_FirstOnsetInCountry				= _onset[iCase]; //// Find first case in each region. 
+			if (_HealthCareWorker[iCase] == 1) _numberOfHCWs++; 
+		}
 
-	_minDay = 0;	//*min_element(_onset.begin(), _onset.end());
-	_maxDay = *max_element(_onset.begin(), _onset.end());
 
 	// Initialize _possibleInfectors (0 = Reservoir is always a possible infector). Possible infectors are set here then never altered throughout program. 
 	_possibleInfectors = vector<set<int>>(_numberOfCases, set<int>({0}));
@@ -439,6 +445,26 @@ void loadAndInitializeData	(string fileName, ModelRun& MR, bool printData = fals
 	_simulLastOnsetInHospital	= vector<int>		(_numberOfHospitals, -1000);
 	_simulRegionR				= vector<double>	(_numberOfRegions);
 
+	if (MR.VacCampStrategy == VaccCampaignStrategy::REACTIVE && MR.DoTriggers)
+	{
+		// allocate and initialize _DayTriggerReached global vec.
+			 if (MR.ReactLevel == ReactiveLevel::HOSPITAL) _DayTriggerReached = vector<int>(_numberOfHospitals	, _maxDay + 1); 
+		else if (MR.ReactLevel == ReactiveLevel::REGIONAL) _DayTriggerReached = vector<int>(_numberOfRegions	, _maxDay + 1);
+		else if (MR.ReactLevel == ReactiveLevel::NATIONAL) _DayTriggerReached = vector<int>(1					, _maxDay + 1);
+
+		// allocate and initialize _EpiCurves (not counterfactual ones)
+			 if (MR.ReactLevel == ReactiveLevel::HOSPITAL) _EpiCurves = vector<vector<int>>(_numberOfHospitals	, vector<int>(_maxDay + 1	, 0));
+		else if (MR.ReactLevel == ReactiveLevel::REGIONAL) _EpiCurves = vector<vector<int>>(_numberOfRegions	, vector<int>(_maxDay + 1	, 0));
+		else if (MR.ReactLevel == ReactiveLevel::NATIONAL) _EpiCurves = vector<vector<int>>(1					, vector<int>(_maxDay + 1	, 0));
+		
+		// Populate epidemic curves - at hospital, regional or national level.
+		ClearEpiCurves();		// (re)sets all _EpiCurves to 0)
+		PopulateEpiCurves(MR);	// sets _EpiCurves to real values
+
+		// Was trigger reached? When?
+		CalcDaysTriggerReached_All(MR.TrigTimeframe, MR.TrigThreshold); // calls CalcDayTriggerReached, which sets _DayTriggerReached for each hospital or region.
+	}
+
 	std::cout << "loadAndInitializeData DONE " << std::endl;
 	fflush(stderr);	fflush(stdout);
 }
@@ -459,15 +485,20 @@ void WriteModelMetaData(AllOutput &OUTPUT, ModelRun &MR, FileStrings_Struct File
 
 	//// ModelRun
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Efficacy_Start				)	<< "\t" << MR.Efficacy_Start			<< std::endl;
-	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Efficacy_Current			)	<< "\t" << MR.Efficacy_Current			<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Coverage					)	<< "\t" << MR.Coverage					<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.ImplementationDelay			)	<< "\t" << MR.ImplementationDelay		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.VaccineDelay				)	<< "\t" << MR.ImmunityDelay				<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.VaccinateAllHumans			)	<< "\t" << MR.VaccinateAllHumans		<< std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Vaccinate_HCW				)	<< "\t" << MR.Vaccinate_HCW				<< std::endl;
 
+	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.MinDay_Pruning				)	<< "\t" << MR.MinDay_Pruning			<< std::endl;
+	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.MaxDay_Pruning				)	<< "\t" << MR.MaxDay_Pruning			<< std::endl;
+
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.VacCampStrategy	)	<< "\t" << Convert_VaccCampaignStrategy_FromEnumClass	(MR.VacCampStrategy	) << std::endl;
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.ReactLevel		)	<< "\t" << Convert_ReactiveLevel_FromEnumClass			(MR.ReactLevel		) << std::endl;
+
+	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.ExpWaning					)	<< "\t" << MR.ExpWaning					<< std::endl;
+	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.HillPower					)	<< "\t" << MR.HillPower					<< std::endl;
 
 	// camels
 	OUTPUT.MetaData << GET_VARIABLE_NAME(MR.Efficacy_CamelControls		)	<< "\t" << MR.Efficacy_CamelControls		<< std::endl;
@@ -539,16 +570,23 @@ std::string ChooseScenarioName	(ModelRun& MR)
 		if (MR.VacCampStrategy == VaccCampaignStrategy::PROACTIVE)
 		{
 			ScenarioName = ScenarioName + "_ProAct";
+			if (!MR.ExpWaning)	ScenarioName = ScenarioName + "_Hill_" + ToStringWithPrecision(MR.HillPower, 0);
 			ScenarioName = ScenarioName + "_Dur_" + ToStringWithPrecision(MR.VaccineDuration		, 2);
 			ScenarioName = ScenarioName + "_Lag_" + ToStringWithPrecision(MR.TimeSinceVaccination	, 2);
 		}
 		else if (MR.VacCampStrategy == VaccCampaignStrategy::REACTIVE)
 		{
+			if (MR.WaningInReactive && MR.VaccineDuration != 0.0) // i.e. duration is finite as zero coded to mean infinite
+			{
+				ScenarioName = ScenarioName + "_RW_Dur_" + ToStringWithPrecision(MR.VaccineDuration, 2);
+				if (!MR.ExpWaning)	ScenarioName = ScenarioName + "_Hill_" + ToStringWithPrecision(MR.HillPower, 0);
+			}
 			if (MR.ReactLevel != ReactiveLevel::HOSPITAL)
 			{
 					 if (MR.ReactLevel == ReactiveLevel::REGIONAL) ScenarioName = ScenarioName + "_reg";
 				else if (MR.ReactLevel == ReactiveLevel::NATIONAL) ScenarioName = ScenarioName + "_nat";
 			}
+			if (MR.DoTriggers) ScenarioName = ScenarioName + "_Tr" + ToStringWithPrecision(MR.TrigThreshold, 1) + "_" + ToStringWithPrecision(MR.TrigTimeframe, 1);
 		}
 
 		if (MR.Coverage				!= 1.0	)	ScenarioName = ScenarioName + "_Cov"		+ ToStringWithPrecision		(MR.Coverage, 2			);
@@ -559,7 +597,12 @@ std::string ChooseScenarioName	(ModelRun& MR)
 		else if (MR.Vaccinate_HCW			)	ScenarioName = ScenarioName + "_vHCW"		;
 	}
 
-	return ScenarioName; 
+	if (MR.MinDay_Pruning > 0 || MR.MaxDay_Pruning < (MAX_ONSET_DAY - 1))
+	{
+		ScenarioName = ScenarioName + "_s" + std::to_string(MR.MinDay_Pruning); // start date
+		ScenarioName = ScenarioName + "_f" + std::to_string(MR.MaxDay_Pruning); // end date
+	}
+	return ScenarioName;
 }
 
 int Choose_numberOfHospitals(int dataSevereCases)
