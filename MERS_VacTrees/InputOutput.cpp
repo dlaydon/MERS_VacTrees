@@ -10,43 +10,27 @@ VaccCampaignStrategy	Convert_VaccCampaignStrategy_FromString	(const std::string&
 {
 		 if (OptionString == "REACTIVE"		) return VaccCampaignStrategy::REACTIVE;
 	else if (OptionString == "PROACTIVE"	) return VaccCampaignStrategy::PROACTIVE;
-	else 
-	{
-		std::cout << endl << "Convert_VaccCampaignStrategy_FromString ERROR: String not recognized" << endl;
-		exit(1);
-	}
+	else std::cout << endl << "Convert_VaccCampaignStrategy_FromString ERROR: String not recognized" << endl;
 }
 ReactiveLevel			Convert_ReactiveLevel_FromString		(const std::string& OptionString)
 {
 		 if (OptionString == "HOSPITAL") return ReactiveLevel::HOSPITAL;
 	else if (OptionString == "REGIONAL") return ReactiveLevel::REGIONAL;
 	else if (OptionString == "NATIONAL") return ReactiveLevel::NATIONAL;
-	else 
-	{
-		std::cout << endl << "Convert_ReactiveLevel_FromString ERROR: String not recognized" << endl;
-		exit(1);
-	}
+	else std::cout << endl << "Convert_ReactiveLevel_FromString ERROR: String not recognized" << endl;
 }
 std::string Convert_VaccCampaignStrategy_FromEnumClass	(VaccCampaignStrategy VacCampStrategy)
 {
 		 if (VacCampStrategy == VaccCampaignStrategy::REACTIVE	) return "REACTIVE"		;
 	else if (VacCampStrategy == VaccCampaignStrategy::PROACTIVE	) return "PROACTIVE"	;	
-	else 
-	{
-		std::cout << endl << "Convert_VaccCampaignStrategy_FromString ERROR: Class not recognized" << endl;
-		exit(1);
-	}
+	else std::cout << endl << "Convert_VaccCampaignStrategy_FromString ERROR: Class not recognized" << endl;
 }
 std::string Convert_ReactiveLevel_FromEnumClass			(ReactiveLevel ReactLevel)
 {
 		 if (ReactLevel == ReactiveLevel::HOSPITAL) return "HOSPITAL";
 	else if (ReactLevel == ReactiveLevel::REGIONAL) return "REGIONAL";
 	else if (ReactLevel == ReactiveLevel::NATIONAL) return "NATIONAL";
-	else 
-	{
-		std::cout << endl << "Convert_VaccCampaignStrategy_FromEnumClass ERROR: Class not recognized" << endl;
-		exit(1);
-	}
+	else std::cout << endl << "Convert_VaccCampaignStrategy_FromEnumClass ERROR: Class not recognized" << endl;
 }
 
 bool FileExists				(string FileName)
@@ -78,12 +62,20 @@ void ReadInParams			(ModelRun &MR, string pParamFileName)
 			else if (param_name == "Efficacy_Start"					)	MR.Efficacy_Start				= std::stod(param_value_string);	// double
 			else if (param_name == "VaccineDuration"				)	MR.VaccineDuration				= std::stod(param_value_string);	// double
 			else if (param_name == "TimeSinceVaccination"			)	MR.TimeSinceVaccination			= std::stod(param_value_string);	// double
+			else if (param_name == "HillPower"						)	MR.HillPower					= std::stod(param_value_string);	// double
+			else if (param_name == "ExpWaning"						)	MR.ExpWaning					= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "Coverage"						)	MR.Coverage						= std::stod(param_value_string);	// double
 			else if (param_name == "ImplementationDelay"			)	MR.ImplementationDelay			= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "ImmunityDelay"					)	MR.ImmunityDelay				= std::stoi(param_value_string);	// int / bool
+			else if (param_name == "MinDay_Pruning"					)	MR.MinDay_Pruning				= std::stoi(param_value_string);	// int / bool
+			else if (param_name == "MaxDay_Pruning"					)	MR.MaxDay_Pruning				= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "VaccinateAllHumans"				)	MR.VaccinateAllHumans			= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "Vaccinate_HCW"					)	MR.Vaccinate_HCW				= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "Efficacy_CamelControls"			)	MR.Efficacy_CamelControls		= std::stod(param_value_string);	// double
+			else if (param_name == "WaningInReactive"				)	MR.WaningInReactive				= std::stoi(param_value_string);	// int / bool
+			else if (param_name == "DoTriggers"						)	MR.DoTriggers					= std::stoi(param_value_string);	// int / bool
+			else if (param_name == "TrigThreshold"					)	MR.TrigThreshold				= std::stoi(param_value_string);	// int / bool
+			else if (param_name == "TrigTimeframe"					)	MR.TrigTimeframe				= std::stoi(param_value_string);	// int / bool
 			else if (param_name == "VacCampStrategy"				)	MR.VacCampStrategy				= Convert_VaccCampaignStrategy_FromString	(param_value_string);
 			else if (param_name == "ReactLevel"						)	MR.ReactLevel					= Convert_ReactiveLevel_FromString			(param_value_string);
 			else	std::cout << " ReadInParams ERROR: param_name " << param_name << " not recognized. param_value_string = " << param_value_string << endl;
@@ -201,6 +193,52 @@ void InitializeOutputValues		(AllOutput& OUTPUT)
 			OUTPUT.SimulCluster << 0 << "\t" << _startOfCluster[iCluster] << "\t" << _regionOfHospital[_hospitalOfCluster[iCluster]] << "\t";
 			OUTPUT.SimulCluster << _hospitalOfCluster[iCluster] << "\t" << _casesInCluster[iCluster].size() << "\t" << 0 << endl;
 		}
+}
+
+// ** // Trigger functions
+void PopulateEpiCurves(ModelRun& MR)
+{
+	for (int iCase = 1; iCase < _numberOfCases; iCase++)
+		if (_withinPruningWindow[iCase])
+			//if (!_DeleteCase_CF[iCase]) // don't need this as this function (with others) determines whether trigger reached, doesn't do counterfactual.
+			switch (MR.ReactLevel)
+			{
+			case ReactiveLevel::HOSPITAL:
+				_EpiCurves[_hospital[iCase]][_onset[iCase]]++; // increment number of cases on that case's day for that cases's hospital
+				break;
+			case ReactiveLevel::REGIONAL:
+				_EpiCurves[_region[iCase]][_onset[iCase]]++; // increment number of cases on that case's day for that cases's region
+				break;
+			case ReactiveLevel::NATIONAL:
+				_EpiCurves[0][_onset[iCase]]++;				// increment number of cases on that case's day nationally
+				break;
+			}
+}
+void ClearEpiCurves()
+{
+	for (int HospOrRegion = 0; HospOrRegion < _EpiCurves.size(); HospOrRegion++)
+		for (int Day = 0; Day < _maxDay + 1; Day++)
+			_EpiCurves[HospOrRegion][Day] = 0;
+}
+void CalcDayTriggerReached(int HospOrRegion, int& TimeFrame, int& Threshold)
+{
+	int TotalInWindow = 0;
+	for (int Day = 0; Day <= _maxDay; Day++)
+	{
+		TotalInWindow += _EpiCurves[HospOrRegion][Day];										// increment total by number of cases (in this region or hospital etc.) on this day. 
+		if (Day >= TimeFrame) TotalInWindow -= _EpiCurves[HospOrRegion][Day - TimeFrame];	// decrement toal by the number of cases (in this region or hospital etc.) that is just outside timeframe. 
+
+		if (TotalInWindow >= Threshold)
+		{
+			_DayTriggerReached[HospOrRegion] = Day;
+			break;
+		}
+	}
+}
+void CalcDaysTriggerReached_All(int& TimeFrame, int& Threshold)
+{
+	for (int HospOrRegion = 0; HospOrRegion < _EpiCurves.size(); HospOrRegion++)
+		CalcDayTriggerReached(HospOrRegion, TimeFrame, Threshold);
 }
 
 void loadAndInitializeData	(string fileName, ModelRun& MR, bool printData = false)

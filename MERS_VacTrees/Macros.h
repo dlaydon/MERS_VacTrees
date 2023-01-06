@@ -38,3 +38,8 @@
 #define MEDIAN		1
 #define LOWER_CrI	2
 #define UPPER_CrI	3
+
+#define Cases_DirectlyProtected_Index			0
+#define Cases_IndirectlyProtected_Index			1
+#define Deaths_DirectlyProtected_Index			2
+#define Deaths_IndirectlyProtected_Index		3

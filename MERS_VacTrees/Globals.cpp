@@ -2,13 +2,14 @@
 
 // data
 int					_numberOfCases; // Number of cases + community (case 0)
+int					_numberOfCases_PruningSubset; // Number of cases + community (case 0) between MR.MinDay_Pruning and MR.MaxDay_Pruning
+int					_numberOfDeaths_PruningSubset; // Number of cases + community (case 0) between MR.MinDay_Pruning and MR.MaxDay_Pruning
 int					_numberOfHospitals;
 int					_numberOfRegions;
 vector<int>			_regionOfHospital;
 vector<int>			_numberOfHospitalsPerRegion;
 vector<vector<int>> _hospitalInRegion;
 int					_numberOfHCWs; // number of healthcare workers
-
 
 int _minDay, _maxDay;
 vector<int>				_nameCase;
@@ -24,7 +25,6 @@ vector<vector<double>>	_meanIndividualObsR;	/// Observed R0 by case and definiti
 vector<vector<double>>	_individualExpR;
 vector<vector<double>>	_clusterExpR;			//// within cluster EXPECTED reproduction numbers (drawn from Gamma dist). indexed by i) cluster; ii) h2h type (although second index always set to zero = SameHospital - relic from older analyses)
 vector<double>			_clusterReductionR;
-//vector<double> _clusterExpGamma;
 
 vector<double>		_regionExpR;
 int					_heterogeneityRegionR;
@@ -43,7 +43,6 @@ vector<int>			_startOfCluster;
 vector<int>			_hospitalOfCluster;
 vector<set<int>>	_casesInCluster;			//// set of all cases in particular cluster.	indexed by i) cluster.	Set in loadAndInitializeData and never changed. 
 vector<set<int>>	_casesInRegion;				//// set of all cases in particular region.		indexed by i) region.	Set in loadAndInitializeData and never changed. 
-
 
 vector <int>			_simulCaseID;
 vector <int>			_simulOnset;
@@ -104,18 +103,16 @@ int _cvParam;						// 0: param5 = k ; 1: param5 = cv = 1/sqrt(k)
 int _estimOverdispersionIntro;
 
 //// Containers (anything with suffix _CF stands for counterfactual). 
-// in simplest case, will assume 100% efficacy, so that _vaccinated and _protected are the same. 
-//vector<bool>			_IsCase_CF;			// In counterfactuals, is person i still a case? indexed by i) case; 
-//vector<int>				_Cases_CF;			// List of case indices who are still cases after vaccination. indexed by i) CF_case.
-vector<bool>			_vaccinated; 			// indexed by i) case;
-vector<bool>			_protected; 			// indexed by i) case;
-vector<bool>			_DeleteCase_CF;			// indexed by i) case; 
-vector<int>				_HealthCareWorker;		// Healthcare worker. indexed by i) case; 0 = Not HCW			; 1 = HCW
-vector<int>				_Sex;					// indexed by i) case; 					  0 = Female			; 1 = Male
-vector<int>				_Dead;					// indexed by i) case; 					  0 = Alive				; 1 = Dead
-vector<int>				_Symptomatic;			// indexed by i) case; 					  0 = Asymptomatic		; 1 = Symptomatic
-vector<int>				_Age;					// Age in years. indexed by i) case; 					  
-vector<int>				_FirstOnsetInHosp;		// time of first onset at hospital. Indexed by i) hospital. 
-vector<int>				_FirstOnsetInRegion; 	// time of first onset at reion. Indexed by i) region. 
-int						_FirstOnsetInCountry; 	// time of first onset in country. 
-vector<set<int>>		_secondaryCases_CF;		// Counterfactual: _secondaryCases[infector] = set of infected by infector. 
+vector<bool>		_vaccinated; 			// indexed by i) case;
+vector<bool>		_withinPruningWindow;	// indexed by i) case; Was subject's onset date within pruning window?
+vector<bool>		_protected; 			// indexed by i) case;
+vector<bool>		_DeleteCase_CF;			// indexed by i) case; 
+vector<int>			_HealthCareWorker;		// Healthcare worker. indexed by i) case; 0 = Not HCW			; 1 = HCW
+vector<int>			_Dead;					// indexed by i) case; 					  0 = Alive				; 1 = Dead
+vector<int>			_FirstOnsetInHosp;		// time of first onset at hospital. Indexed by i) hospital. 
+vector<int>			_FirstOnsetInRegion; 	// time of first onset at reion. Indexed by i) region. 
+int					_FirstOnsetInCountry; 	// time of first onset in country. 
+vector<set<int>>	_secondaryCases_CF;		// Counterfactual: _secondaryCases[infector] = set of infected by infector. 
+vector<double>		_EfficacyCurrent;		// indexed by i) case. What is the remaining/residual efficacy for this case at the time of their symptom onset.
+vector<int>			_DayTriggerReached;		// Date that trigger reached. initialized to MAX_ONSET_DAY + 1 (i.e. not reached). Indexed by i) either hopsital or region (or simply country) depending on whether reacting at hospital, regional or national level.
+vector<vector<int>>	_EpiCurves;				// indexed by i) hospital or region; ii) day. Used only when doing triggers.
