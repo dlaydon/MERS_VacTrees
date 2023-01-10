@@ -41,16 +41,16 @@ SummStat 				= function(Vector, IncludeMode = FALSE) ### returns summary statist
 }
 
 ProjectDirectory 	= here()
-R_ScriptDirectory 	= file.path(ProjectDirectory, "R"			)
-CppRootDirectory 	= file.path(ProjectDirectory, "MERS_Vac"	, "MERS_Vac") 
+R_ScriptDirectory 	= file.path(ProjectDirectory, "R")
+CppRootDirectory 	= file.path(ProjectDirectory, "MERS_Vac", "MERS_Vac") 
 CppOutputDirectory 	= file.path(ProjectDirectory, "Output"		) 
 RawDataDirectory 	= file.path(ProjectDirectory, "Data"		)
 source(file.path(R_ScriptDirectory, "DirectoryFunctions.R"))
 
 # Import processed data for Cpp
 DATA 		= read.table(file = file.path(RawDataDirectory, "MERS_forCpp.txt"), header = TRUE)
-Day_0  		= as.Date		("2013-01-01") #### 1st Jan 2013 is Day zero. 
-Day_Final  	= Day_0 + max(DATA$onset) # note Different from Day_Final in MakeLineListForCpp.R script.
+Day_0  		= as.Date("2013-01-01") #### 1st Jan 2013 is Day zero. 
+Day_Final  	= Day_0 + max(DATA$onset) 
 
 TotalDeaths 		= sum(DATA$Dead)
 TotalDeaths_HCW 	= length(which(DATA$HCW == 1 & DATA$Dead == 1))
@@ -122,9 +122,9 @@ ModelRuns = DefineModelRuns(
 		VacCampStrategies 				= c("REACTIVE", "PROACTIVE"), 
 #		ReactLevels						= c("HOSPITAL", "REGIONAL", "NATIONAL")							,
 #		Efficacies_CamelControls		= seq(0, 0.5, 0.1)													,
-#		ImplementationDelays 			= seq(0, 28, 2)											, 
+		ImplementationDelays 			= seq(0, 28, 2)											, 
 		
-#		WaningInReactiveAndNot 			= 0:1										, 
+		WaningInReactiveAndNot 			= 1										, 
 #		Pruning_Ranges 					= list(c(0, 548), c(0,180), c(181,364), c(365,548))			,
 #		DoTriggersAndNot = 1	, 
 #		TrigThresholds	= c(5,10,15,20,25,30)	,
@@ -132,11 +132,11 @@ ModelRuns = DefineModelRuns(
 #		ExpWaningAndNot					= 1:0														,
 		
 		ImmunityDelays 					= c(14, 0)													, 
-		Efficacies_Start 				= seq(0.00, 1, by = 0.05)										, 
+		Efficacies_Start 				= seq(0.00, 1, by = 0.1)										, 
 		VaccineDurations 				= c(0, 20, 15, 10, 5, 2, 1)														, 
 		TimesSinceVaccination 			= c(0.5, 1:10)
 ) 
-
+dim(ModelRuns)
 
 TotalDeaths_LongVec			= rep(NA, dim(ModelRuns)[1])
 TotalDeaths_HCW_LongVec		= rep(NA, dim(ModelRuns)[1])
@@ -218,18 +218,23 @@ for (MR_index in 1:dim(ModelRuns)[1])
 	DirIndirFileName = file.path(CppOutputDirectory, paste0("DirectIndirect_CF" 	, OutputString, ".txt"))
 #	if (file.exists(DirIndirFileName))	DirectIndirect_Summary = try(read.table(file = DirIndirFileName, header = F, sep = "\t"), silent = TRUE) else  next
 	DirectIndirect_Summary = try(read.table(file = DirIndirFileName, header = F, sep = "\t"), silent = TRUE)
-	if (class(DirectIndirect_Summary) == "try-error") DidRunFail[MR_index] = 1
-#	if (class(DirectIndirect_Summary) == "try-error") next
-	colnames(DirectIndirect_Summary) = StatNames
-	rownames(DirectIndirect_Summary) = DirectIndirect_CFs
-	
-	counterfactualquantity = DirectIndirect_CFs[1]
-	for (counterfactualquantity in DirectIndirect_CFs)	
+	if (class(DirectIndirect_Summary) == "try-error") 
 	{
-		Colnames_ThisCounterFactual 						= paste0(counterfactualquantity, "_", StatNames)
-		ModelRuns[MR_index, Colnames_ThisCounterFactual] 	= DirectIndirect_Summary[counterfactualquantity, ]
-	}
+		DidRunFail[MR_index] = 1
 	
+	} else {
+		
+		colnames(DirectIndirect_Summary) = StatNames
+		rownames(DirectIndirect_Summary) = DirectIndirect_CFs
+		
+		counterfactualquantity = DirectIndirect_CFs[1]
+		for (counterfactualquantity in DirectIndirect_CFs)	
+		{
+			Colnames_ThisCounterFactual 						= paste0(counterfactualquantity, "_", StatNames)
+			ModelRuns[MR_index, Colnames_ThisCounterFactual] 	= DirectIndirect_Summary[counterfactualquantity, ]
+		}
+		
+	}
 	
 	EpiCurvesFileName 		= file.path(CppOutputDirectory, paste0("CF_EpiCurves" 			, OutputString, ".txt"))
 #	EpiCurvesDeathsFileName = file.path(CppOutputDirectory, paste0("CF_EpiCurves_Deaths" 	, OutputString, ".txt"))
@@ -323,7 +328,7 @@ for (MR_index in 1:dim(ModelRuns)[1])
 	
 	#### clean up. 
 	FilenamesCompleted = c(FilenamesCompleted, OutputString)
-	rm(CF_CHAINS, OutputSubDir, CF_EpiCurves, CF_EpiCurves_Deaths)
+	rm(CF_CHAINS, CF_CHAINS_Summary, OutputSubDir, CF_EpiCurves, CF_EpiCurves_Deaths)
 	cat("\n")
 }
 

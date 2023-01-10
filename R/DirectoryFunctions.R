@@ -181,8 +181,9 @@ DefineModelRuns = function(
 	if (RemoveDuplicates)			ModelRuns = ModelRuns[!duplicated(ModelRuns$OutputFolderNames), ]
 	#### Remove incomplete runs, if you want (e.g. useful to not compare runs you haven't done)
 	
-	# Check if either full chains or summary available
-	RunsCompleted = file.exists(file.path(CppOutputDirectory, paste0("CF_Chains_", ModelRuns$OutputFolderNames, ".txt"))) | file.exists(file.path(CppOutputDirectory, paste0("CF_ChainsSumm_", ModelRuns$OutputFolderNames, ".txt")))
+	# Check if either full chains or summary chains available
+	RunsCompleted = file.exists(file.path(CppOutputDirectory, paste0("CF_Chains_"		, ModelRuns$OutputFolderNames, ".txt"))) 	| 
+					file.exists(file.path(CppOutputDirectory, paste0("CF_ChainsSumm_"	, ModelRuns$OutputFolderNames, ".txt")))
 	if (IncludeCompletedRunsOnly) 	ModelRuns = ModelRuns[RunsCompleted, ] ### _underscore after ParameterChainOutput depends on Folder argument in ChooseOutputString function called above.
 	
 	cat("done.")
