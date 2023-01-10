@@ -277,7 +277,7 @@ enum class ReactiveLevel {
 
 struct ModelRun { //// Set of housekeeping variables
 
-	bool UseCommandLine		= false; // Reading in parameter file from the command line (i.e. with UseCommandLine == true) will overide the parameters below. Otherwise can set them here. 
+	bool UseCommandLine		= true; // Reading in parameter file from the command line (i.e. with UseCommandLine == true) will overide the parameters below. Otherwise can set them here. 
 
 	int NumIterations			= 1100;	// slight misnomer in that it doesn't take account of StoreEvery below. MCMC will run for NumIterations * StoreEvery iterations, whereas counterfactual trees will be calculated NumIterations times.
 	int BurnIn					= 100;		// see above but slight misnomer in that Burnin * StoreEvery is the real number of iterations considered as Burn in period.
