@@ -1,7 +1,3 @@
-rm(list=ls())
-Sys.time()
-gc()
-
 require(plot3D)
 require(here)
 require(ggplot2)
@@ -23,7 +19,6 @@ ParDefaults = par()
 OrigMAR 	= ParDefaults$mar
 
 ############################################################################
-options(width = 108L)
 OrigMAI = par ("mai") ### good to record if using layout functions
 OrigMAR = par ("mar") ### good to record if using layout functions
 
@@ -167,7 +162,6 @@ RedundantIndices = which(ModelRuns$VacCampStrategy == "REACTIVE" & ModelRuns$Imm
 if (length(RedundantIndices) > 0)	ModelRuns = ModelRuns[-RedundantIndices, ]
 
 dim(ModelRuns)
-#ModelRuns$OutputFolderNames
 ModelRun = ModelRuns[1,]
 ModelRuns$Pruning_Range = NULL
 
@@ -216,7 +210,6 @@ for (MR_index in 1:dim(ModelRuns)[1])
 	}
 	
 	DirIndirFileName = file.path(CppOutputDirectory, paste0("DirectIndirect_CF" 	, OutputString, ".txt"))
-#	if (file.exists(DirIndirFileName))	DirectIndirect_Summary = try(read.table(file = DirIndirFileName, header = F, sep = "\t"), silent = TRUE) else  next
 	DirectIndirect_Summary = try(read.table(file = DirIndirFileName, header = F, sep = "\t"), silent = TRUE)
 	if (class(DirectIndirect_Summary) == "try-error") 
 	{
@@ -237,7 +230,6 @@ for (MR_index in 1:dim(ModelRuns)[1])
 	}
 	
 	EpiCurvesFileName 		= file.path(CppOutputDirectory, paste0("CF_EpiCurves" 			, OutputString, ".txt"))
-#	EpiCurvesDeathsFileName = file.path(CppOutputDirectory, paste0("CF_EpiCurves_Deaths" 	, OutputString, ".txt"))
 	TreesFileName			= file.path(CppOutputDirectory, paste0("Trees_CF"				, OutputString, ".txt"))
 	
 	if (file.exists(EpiCurvesFileName))
@@ -286,7 +278,7 @@ for (MR_index in 1:dim(ModelRuns)[1])
 					}					
 				}
 				
-			} #else cat (paste0("MR_index ", MR_index, " ", OutputString, " EpiCurves don't exist"))
+			} 
 		}
 	}
 	
@@ -300,8 +292,6 @@ for (MR_index in 1:dim(ModelRuns)[1])
 			
 			if (dim(CF_Trees)[1] > 0)
 			{
-#				TransmissionContribMatrix[MR_index, COLNAMES_TransContribMat_Props] = signif(table(CF_Trees$H2Htype) / dim(CF_Trees)[1], 3)
-#				TransmissionContribMatrix[MR_index, COLNAMES_TransContribMat_Abs] 	= round(colSums(table(CF_Trees$iteration, CF_Trees$H2Htype)) / length(unique(CF_Trees$iteration)))
 				TableDummy = table(CF_Trees$H2Htype) 
 				if (length(TableDummy) == 4)
 				{
