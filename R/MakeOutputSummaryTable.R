@@ -337,7 +337,7 @@ ModelRuns$Peak_Reduction_LowerCrI 	= (DATA_EpidemicPeakSize_Weekly - ModelRuns$P
 ModelRuns$Peak_Reduction_UpperCrI 	= (DATA_EpidemicPeakSize_Weekly - ModelRuns$Peak_LowerCrI	)	/ DATA_EpidemicPeakSize_Weekly # note switch of upper and lower CrI
 
 # write.table
-write.table(ModelRuns, file = file.path(CppOutputDirectory, paste0("ModelRunsSummary.txt")), row.names = F, col.names = T, quote = F, sep = "\t")
+write.table(ModelRuns, file = file.path(ProjectDirectory, paste0("ModelRunsSummary.txt")), row.names = F, col.names = T, quote = F, sep = "\t")
 
 
 
