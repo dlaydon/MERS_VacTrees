@@ -1,7 +1,7 @@
-
-rm(list=ls())
-Sys.time()
-gc()
+# Libraries
+library(dplyr)
+library(tidyr)
+library(viridis)
 
 require(plot3D)
 require(here)
@@ -16,17 +16,10 @@ library(colorRamps)
 library("cowplot")
 require(sp)
 
-
-# Libraries
-library(dplyr)
-library(tidyr)
-library(viridis)
-
 ParDefaults = par()
 OrigMAR 	= ParDefaults$mar
 
 ############################################################################
-options(width = 108L)
 OrigMAI = par ("mai") ### record if using layout functions
 OrigMAR = par ("mar") ### record if using layout functions
 
@@ -68,8 +61,7 @@ CF_quantity = "PropCasesAverted_Mean"
 for (CF_quantity in c("PropCasesAverted_Mean", "DeathsAverted_CF_Mean"))
 {
 	if (CF_quantity == "PropCasesAverted_Mean") CF_Name = "Cases averted" else CF_Name = "Deaths averted"  
-	png(filename = file.path(here("Plots"), paste0("National_vs_Regional_vs_Hospital_Reactive_", CF_Name, ".png")), 
-			res = 500, units = "in", width = 12, height = 7.5)
+	png(filename = file.path(here("Plots"), paste0("National_vs_Regional_vs_Hospital_Reactive_", CF_Name, ".png")), res = 500, units = "in", width = 12, height = 7.5)
 	LayoutMatrix = matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
 	LayoutMatrix = cbind(LayoutMatrix, c(7,7))
 	layout(LayoutMatrix, widths = c(1,1,1,0.4))
@@ -130,6 +122,7 @@ for (CF_quantity in c("PropCasesAverted_Mean", "DeathsAverted_CF_Mean"))
 	par(mar = OrigMAR) ### reset default margins
 	dev.off()
 }
+
 
 
 

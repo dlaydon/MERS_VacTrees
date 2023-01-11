@@ -115,7 +115,6 @@ template <typename TYPE> void Populate_3D_Array(TYPE ***	&OBJECT, TYPE Value, in
 }
 
 
-
 struct QuantIndices_Struct {
 
 	int HugeQuantIndex = 40000; //// Do not set to NULL as it evaluates to zero for int's.
@@ -193,8 +192,8 @@ struct FileStrings_Struct {
 	string pathInput, pathOutput;
 	string inputFileName, ScenarioName;
 	string inputFile;
-	string Chains, IndividualR, Infector, ClusterR, ClusterReductionR, SimulCluster, Tree, Tree_CF, CF_Chains, CF_EpiCurves, CF_EpiCurves_Deaths;
-	string MetaData; 
+	string Chains, IndividualR, Infector, ClusterR, ClusterReductionR, SimulCluster, Tree, Tree_CF, CF_Chains, CF_ChainsSumm, DirectIndirect_CF, HospRegionsAffected, CF_EpiCurves, CF_EpiCurves_Deaths;
+	string MetaData;
 	string InitParamValues;
 
 	void init(string inputFileNameArg, string ScenarioNameArg)
@@ -209,19 +208,22 @@ struct FileStrings_Struct {
 
 		string CombinedScenarioName = ScenarioName;
 
-		Chains				= pathOutput	+ "Chains"				+ CombinedScenarioName + ".txt";
-		IndividualR			= pathOutput	+ "individualR"			+ CombinedScenarioName + ".txt";
-		Infector			= pathOutput	+ "infector"			+ CombinedScenarioName + ".txt";
-		ClusterR			= pathOutput	+ "clusterR"			+ CombinedScenarioName + ".txt";
-		ClusterReductionR	= pathOutput	+ "clusterReductionR"	+ CombinedScenarioName + ".txt";
-		SimulCluster		= pathOutput	+ "simulCluster"		+ CombinedScenarioName + ".txt";
-		Tree				= pathOutput	+ "Trees"				+ CombinedScenarioName + ".txt";
-		Tree_CF				= pathOutput	+ "Trees_CF"			+ CombinedScenarioName + ".txt";
-		CF_Chains			= pathOutput	+ "CF_Chains"			+ CombinedScenarioName + ".txt";
-		CF_EpiCurves		= pathOutput	+ "CF_EpiCurves"		+ CombinedScenarioName + ".txt";
-		CF_EpiCurves_Deaths	= pathOutput	+ "CF_EpiCurves_Deaths"	+ CombinedScenarioName + ".txt";
-		MetaData			= pathOutput	+ "MetaData"			+ CombinedScenarioName + ".txt";
-		InitParamValues		= pathOutput	+ "InitParamValues"		+ CombinedScenarioName + ".txt";
+		Chains				= pathOutput + "Chains"					+ CombinedScenarioName + ".txt";
+		IndividualR			= pathOutput + "individualR"			+ CombinedScenarioName + ".txt";
+		Infector			= pathOutput + "infector"				+ CombinedScenarioName + ".txt";
+		ClusterR			= pathOutput + "clusterR"				+ CombinedScenarioName + ".txt";
+		ClusterReductionR	= pathOutput + "clusterReductionR"		+ CombinedScenarioName + ".txt";
+		SimulCluster		= pathOutput + "simulCluster"			+ CombinedScenarioName + ".txt";
+		Tree				= pathOutput + "Trees"					+ CombinedScenarioName + ".txt";
+		Tree_CF				= pathOutput + "Trees_CF"				+ CombinedScenarioName + ".txt";
+		CF_Chains			= pathOutput + "CF_Chains"				+ CombinedScenarioName + ".txt";
+		CF_ChainsSumm		= pathOutput + "CF_ChainsSumm"			+ CombinedScenarioName + ".txt";
+		DirectIndirect_CF	= pathOutput + "DirectIndirect_CF"		+ CombinedScenarioName + ".txt";
+		HospRegionsAffected = pathOutput + "HospRegionsAffected"	+ CombinedScenarioName + ".txt";
+		CF_EpiCurves		= pathOutput + "CF_EpiCurves"			+ CombinedScenarioName + ".txt";
+		CF_EpiCurves_Deaths	= pathOutput + "CF_EpiCurves_Deaths"	+ CombinedScenarioName + ".txt";
+		MetaData			= pathOutput + "MetaData"				+ CombinedScenarioName + ".txt";
+		InitParamValues		= pathOutput + "InitParamValues"		+ CombinedScenarioName + ".txt";
 	}
 };
 struct AllOutput {
@@ -231,13 +233,16 @@ struct AllOutput {
 	ofstream ClusterR				; bool Write_ClusterR				= false;
 	ofstream ClusterReductionR		; bool Write_ClusterReductionR		= false;
 	ofstream SimulCluster			; bool Write_SimulCluster			= false;
+	ofstream CF_Chains				; bool Write_CF_Chains				= false;
+	ofstream CF_ChainsSumm			; bool Write_CF_ChainsSumm			= true;	// summarised versions of chains with only mean and credible intervals.
 	ofstream Trees					; bool Write_Trees					= false;
-	ofstream Trees_CF				; bool Write_Trees_CF				= true;
-	ofstream CF_Chains				; bool Write_CF_Chains				= true;
-	ofstream CF_EpiCurves			; bool Write_CF_EpiCurves			= true;
-	ofstream CF_EpiCurves_Deaths	; bool Write_CF_EpiCurves_Deaths	= true;
-	ofstream MetaData				; bool Write_MetaData				= true;
-	ofstream InitParamValues		; bool Write_InitParamValues		= true;
+	ofstream Trees_CF				; bool Write_Trees_CF				= false;
+	ofstream DirectIndirect_CF		; bool Write_DirectIndirect_CF		= true;
+	ofstream HospRegionsAffected	; bool Write_HospRegionsAffected	= true;
+	ofstream CF_EpiCurves			; bool Write_CF_EpiCurves			= false;
+	ofstream CF_EpiCurves_Deaths	; bool Write_CF_EpiCurves_Deaths	= false;
+	ofstream MetaData				; bool Write_MetaData				= false;
+	ofstream InitParamValues		; bool Write_InitParamValues		= false;
 		
 	void init(FileStrings_Struct FileStrings)
 	{
@@ -249,6 +254,9 @@ struct AllOutput {
 		if (Write_Trees					) Trees					.open(FileStrings.Tree					);
 		if (Write_Trees_CF				) Trees_CF				.open(FileStrings.Tree_CF				);
 		if (Write_CF_Chains				) CF_Chains				.open(FileStrings.CF_Chains				);
+		if (Write_CF_ChainsSumm			) CF_ChainsSumm			.open(FileStrings.CF_ChainsSumm			);
+		if (Write_DirectIndirect_CF		) DirectIndirect_CF		.open(FileStrings.DirectIndirect_CF		);
+		if (Write_HospRegionsAffected	) HospRegionsAffected	.open(FileStrings.HospRegionsAffected	);
 		if (Write_CF_EpiCurves			) CF_EpiCurves			.open(FileStrings.CF_EpiCurves			);
 		if (Write_CF_EpiCurves_Deaths	) CF_EpiCurves_Deaths	.open(FileStrings.CF_EpiCurves_Deaths	);
 		if (Write_MetaData				) MetaData				.open(FileStrings.MetaData				);
@@ -271,8 +279,8 @@ struct ModelRun { //// Set of housekeeping variables
 
 	bool UseCommandLine		= true; // Reading in parameter file from the command line (i.e. with UseCommandLine == true) will overide the parameters below. Otherwise can set them here. 
 
-	int NumIterations			= 11000;	// slight misnomer in that it doesn't take account of StoreEvery below. MCMC will run for NumIterations * StoreEvery iterations, whereas counterfactual trees will be calculated NumIterations times.
-	int BurnIn					= 1000;		// see above but slight misnomer in that Burnin * StoreEvery is the real number of iterations considered as Burn in period.
+	int NumIterations			= 1100;	// slight misnomer in that it doesn't take account of StoreEvery below. MCMC will run for NumIterations * StoreEvery iterations, whereas counterfactual trees will be calculated NumIterations times.
+	int BurnIn					= 100;		// see above but slight misnomer in that Burnin * StoreEvery is the real number of iterations considered as Burn in period.
 	int NumCFQuantities			= 0;	//// add to this as required
 	int NumCFEpiCurvestStats	= 4;	//// number of summary statistics for counterfactual epidemic curves (mean, median, lower CrI, upper CrI)
 	int OutputTreesEvery		= 100;	//// also output counterfactual trees every
@@ -284,23 +292,32 @@ struct ModelRun { //// Set of housekeeping variables
 	int ** CF_EpiCurves_Internal;						//// indexed by i) iteration; ii) week. Internal version of CF_EpiCurves above. That quantity is outputted. This quantity is used during runtime.
 	int ** CF_EpiCurves_Deaths_Internal;				//// indexed by i) iteration; ii) week. Internal version of CF_EpiCurves_Deaths above. That quantity is outputted. This quantity is used during runtime.
 
-	std::vector<string> CF_Names;				//// names of counterfactual quantites
+	int** CaseInHospital = NULL;						//// indexed by i) iteration; ii) hospital. Internal version of CF_EpiCurves above. That quantity is outputted. This quantity is used during runtime.
+	int** CaseInRegion = NULL;							//// indexed by i) iteration; ii) region. Internal version of CF_EpiCurves above. That quantity is outputted. This quantity is used during runtime.
+
+	std::vector<vector<double>> DirectIndirect_CF;		//// 1) iteration; 2) Quantity; vector of vector of doubles. Basically the same as CF_Chains but don't want 1000s more large collections of chains. Instead will output just mean and CrIs for proportions of those protected, and proportions of those cases averted but not protectd.
+	std::vector<string> CF_Names;						//// names of counterfactual quantites
 
 	//// counterfactual parameters. Set as inputs and unchanged throughout MCMC runtime. 
 	VaccCampaignStrategy VacCampStrategy	= VaccCampaignStrategy::PROACTIVE;
 	ReactiveLevel ReactLevel				= ReactiveLevel::HOSPITAL;
-	double Efficacy_Current					= 0.5;		 
-	double Efficacy_Start					= 0.0;		 
-	double VaccineDuration					= 5000	;	//// Current efficacy = Efficacy * exp (-(TimeSinceVaccination) / VaccineDuration). VaccineDuration == 0 => no waning. 
-	double TimeSinceVaccination				= 1;		//// In years, relative to Day_0 (date of first case), can be negative if considering proactive vaccination before outbreak. 
-	double Coverage							= 1.0;		
-	int ImplementationDelay					= 0;		//// measured in days. 
-	int ImmunityDelay						= 0;		//// measured in days. 
 	
-	///// Add in delays corresponding to incubation period
-	bool VaccinateAllHumans				= false;	// this will trump any other booleans (except camels!)
-	bool Vaccinate_HCW					= true; 
-	double Efficacy_CamelControls		= 0.6;		// efficacy of camel control measures (deliberately vague term to encompass possible vaccination, changes in policy or other control measures aimed at limiting contribution from animal reservoir).
+	bool WaningInReactive		= true;
+	bool ExpWaning				= true; // if false, vaccine wanes according to a hill function, otherwise exponential.
+	double HillPower			= 4.0;
+	double Efficacy_Start		= 1.0;		 
+	double VaccineDuration		= 0	;	//// Current efficacy = Efficacy * exp (-(TimeSinceVaccination) / VaccineDuration). VaccineDuration == 0 => no waning. 
+	double TimeSinceVaccination	= 1;		//// In years, relative to Day_0 (date of first case)
+	double Coverage				= 1.0;		
+	int ImplementationDelay		= 14;		//// measured in days. 
+	int ImmunityDelay			= 14;		//// measured in days. 
+
+	int MinDay_Pruning = 0;
+	int MaxDay_Pruning = MAX_ONSET_DAY - 1;
+
+	bool VaccinateAllHumans			= false;	// this will trump any other booleans (except camels!)
+	bool Vaccinate_HCW				= true; 
+	double Efficacy_CamelControls	= 0.0;		// efficacy of camel control measures (deliberately vague term to encompass possible vaccination, changes in policy or other control measures aimed at limiting contribution from animal reservoir).
 
 	QuantIndices_Struct QIs;		//// index of quantities 
 	AllOutput OUPTUT; 
@@ -308,6 +325,11 @@ struct ModelRun { //// Set of housekeeping variables
 
 	int max_threads = 1;
 	long seed1 = 547838717ul, seed2 = 943517526ul;
+
+	// Triggers - defined in by certain number of infections (TrigThreshold) within a certain number of days (TrigTimeFrame)
+	bool DoTriggers = true; 
+	int TrigThreshold = 20; 
+	int TrigTimeframe = 7; 
 
 	void AddToCF_Quantities(std::vector<string>& Names, string NameOfThisQuantity, int& CumulativeNumQuantities, int& IndexToSet)
 	{
@@ -324,12 +346,13 @@ struct ModelRun { //// Set of housekeeping variables
 		AddToCF_Quantities(CF_Names, "DeathsAverted_CF"			, NumCFQuantities, QIs.DeathsAverted_CF			);
 		AddToCF_Quantities(CF_Names, "DeathsAverted_CF_HCW"		, NumCFQuantities, QIs.DeathsAverted_CF_HCW		);
 		AddToCF_Quantities(CF_Names, "DeathsAverted_CF_nHCW"	, NumCFQuantities, QIs.DeathsAverted_CF_nHCW	);
-		AddToCF_Quantities(CF_Names, "FinalCaseDate_CF", NumCFQuantities, QIs.FinalCaseDate_CF);
+		AddToCF_Quantities(CF_Names, "FinalCaseDate_CF"			, NumCFQuantities, QIs.FinalCaseDate_CF			);
 		
-		std::cout << "Model Run NumCFQuantities " << NumCFQuantities << endl; 
+		std::cout << "NumCFQuantities " << NumCFQuantities << endl; 
 
 		// allocate memory for counterfactual chains and epi curves
 		CF_Chains			= vector<vector<double>>(NumIterations			, vector<double>(NumCFQuantities		, 0));
+		DirectIndirect_CF	= vector<vector<double>>(NumIterations			, vector<double>(NumCFQuantities		, 0));
 		CF_EpiCurves		= vector<vector<double>>((MAX_ONSET_DAY / 7) + 1, vector<double>(NumCFEpiCurvestStats	, 0));
 		CF_EpiCurves_Deaths	= vector<vector<double>>((MAX_ONSET_DAY / 7) + 1, vector<double>(NumCFEpiCurvestStats	, 0));
 

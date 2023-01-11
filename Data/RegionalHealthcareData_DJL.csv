@@ -1,0 +1,22 @@
+RegionNumber,RegionNumberAfterReordering,RegionNameInData,OtherSpellings,SubRegionOrCity,Hospitals,Physicians,Nurses,Midwives
+0,10,Al-Bahah,Al-Bahah,Al-Bahah,10,1325,2257,34
+1,11,Al Hudud ash Shamaliyah,Northern Borders,Northern Borders,11,1286,2876,68
+2,7,Al Jawf,Al-Jouf,Al Jawf,9,1213,3563,40
+2,7,Al Jawf,Al-Jouf,Qurayyat,4,465,1361,9
+3,4,Al Madinah,Medinah,Medinah,18,3711,7992,122
+4,2,Al Quassim,Qaseem,Qaseem,19,3099,6707,74
+5,1,Ar Riyad,Riyadh,Riyadh,49,10887,20585,260
+6,6,Aseer,Asir,Aseer,20,3054,5546,142
+6,6,Aseer,Asir,Bishah,8,1022,1858,19
+7,3,Ash Sharqiyah,Eastern ,Ash Sharqiyah,21,4643,9054,111
+7,3,Ash Sharqiyah,Eastern ,Hafr Al-Baten,7,814,3148,53
+7,3,Ash Sharqiyah,Eastern ,Al-Ahsa,10,2139,4471,37
+8,5,Makkah,Makkah,Jeddah,13,4395,7158,113
+8,5,Makkah,Makkah,Mecca,10,3932,6602,146
+8,5,Makkah,Makkah,Ta'if,16,2449,5144,61
+8,5,Makkah,Makkah,Qunfudhah,5,675,970,27
+9,9,Najran,Najran,Najran,10,1517,3382,58
+10,8,Tabuk,Tabouk,Tabouk,12,1876,3972,103
+11,12,Ha'il,Ha'il,Ha'il,14,1713,3713,55
+12,13,Al-Jazan,Jizan,Jizan,21,2636,5629,114
+13,14,National,National,National,287,52851,105988,1646

@@ -28,4 +28,3 @@ template <typename T>
 std::string ToStringWithPrecision(const T a_value, const int n); 
 std::string ChooseScenarioName(ModelRun& MR);
 int Choose_numberOfHospitals(int dataSevereCases); 
-

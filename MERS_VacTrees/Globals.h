@@ -2,6 +2,8 @@
 
 // data
 extern int					_numberOfCases; // Number of cases + community (case 0)
+extern int					_numberOfCases_PruningSubset;	// Number of cases + community (case 0) between MR.MinDay_Pruning and MR.MaxDay_Pruning
+extern int					_numberOfDeaths_PruningSubset;	// Number of cases + community (case 0) between MR.MinDay_Pruning and MR.MaxDay_Pruning
 extern int					_numberOfHospitals;
 extern int					_numberOfRegions;
 extern vector<int>			_regionOfHospital;
@@ -19,13 +21,9 @@ extern vector<int>				_infector;				// indexed by i) case; _infector[infectee] g
 extern int						_numberOfH2Htype;		// 0: hospital; 1: region; 2: other region
 extern vector<vector<int>>		_individualObsR;		/// Observed R0 by case and definition IN PARTICULAR PARAMATER SAMPLE,  indexed by i) case; ii) H2H type
 extern vector<vector<double>>	_meanIndividualObsR;	/// Observed R0 by case and definition in MEAN. indexed by i) case; ii) H2H type
-
-
 extern vector<vector<double>>	_individualExpR;
 extern vector<vector<double>>	_clusterExpR;			//// within cluster EXPECTED reproduction numbers (drawn from Gamma dist). indexed by i) cluster; ii) h2h type (although second index always set to zero = SameHospital so this is a relic from older analyses)
 extern vector<double>			_clusterReductionR;
-//vector<double> _clusterExpGamma;
-
 extern vector<double>		_regionExpR;
 extern int					_heterogeneityRegionR;
 
@@ -106,18 +104,16 @@ extern int _estimOverdispersionIntro;
 
 //// Containers (anything with suffix _CF stands for counterfactual). 
 // in simplest case, will assume 100% efficacy, so that _vaccinated and _protected are the same. 
-//vector<bool>			_IsCase_CF;			// In counterfactuals, is person i still a case? indexed by i) case; 
-//vector<int>				_Cases_CF;			// List of case indices who are still cases after vaccination. indexed by i) CF_case.
 extern vector<bool>			_vaccinated; 			// indexed by i) case;
 extern vector<bool>			_protected; 			// indexed by i) case;
+extern vector<bool>			_withinPruningWindow;	// indexed by i) case; Was subject's onset date within pruning window?
 extern vector<bool>			_DeleteCase_CF;			// indexed by i) case; 
 extern vector<int>			_HealthCareWorker;		// Healthcare worker. indexed by i) case; 0 = Not HCW			; 1 = HCW
-extern vector<int>			_Sex;					// indexed by i) case; 					  0 = Female			; 1 = Male
 extern vector<int>			_Dead;					// indexed by i) case; 					  0 = Alive				; 1 = Dead
-extern vector<int>			_Symptomatic;			// indexed by i) case; 					  0 = Asymptomatic		; 1 = Symptomatic
-extern vector<int>			_Age;					// indexed by i) case; 					
 extern vector<int>			_FirstOnsetInHosp;		// time of first onset at hospital. Indexed by i) hospital. 
 extern vector<int>			_FirstOnsetInRegion; 	// time of first onset at region. Indexed by i) region. 
 extern int					_FirstOnsetInCountry; 	// time of first onset in country. 
-
 extern vector<set<int>>		_secondaryCases_CF;		// Counterfactual: _secondaryCases[infector] = set of infected by infector. 
+extern vector<double>		_EfficacyCurrent;		// indexed by i) case. What is the remaining/residual efficacy for this case at the time of their symptom onset.
+extern vector<int>			_DayTriggerReached;		// Date that trigger reached. initialized to MAX_ONSET_DAY + 1 (i.e. not reached). Indexed by i) either hopsital or region (or simply country) depending on whether reacting at hospital, regional or national level.
+extern vector<vector<int>>	_EpiCurves;				// indexed by i) hospital or region; ii) day. Used only when doing triggers.
