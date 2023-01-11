@@ -112,9 +112,6 @@ TriggerDFrame = as.data.frame(TriggerDFrame)
 TriggerDFrame
 
 
-### instead plot full epidemic curve - with vertical lines denoting date that a particular trigger is reached.
-### have multiple panels for multiple triggers or multiple time periods.
-
 Onset_Week 		= floor(DATA$onset / 7)
 AllCases_Inc 	= rep(NA, max(Onset_Week)); 
 AllCases_Inc[as.numeric(names(table(Onset_Week)))] = table(Onset_Week)
