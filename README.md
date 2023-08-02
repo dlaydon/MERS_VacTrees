@@ -2,12 +2,12 @@
 
 This repository contains all code for the Bayesian counterfactual analysis of 
 potential MERS-CoV vaccine impact, 
-developed primarily by Daniel J. Laydon, and Neil M. Ferguson of the MRC Centre
+developed by Daniel J. Laydon, and Neil M. Ferguson of the MRC Centre
 for Global Infectious Disease Analysis at Imperial College, London, and Simon Cauchemez of the Institut Pasteur, Paris. 
 The model assesses vaccine impact by inferring transmission trees, 
 ("who-infected-whom") analysis, and then "pruning" these trees to generate counterfactuals. 
 The repository also contains code to assess and compare various vaccination campaign strategies.
-Full details are available at <https://www.medrxiv.org/content/10.1101/2022.04.06.22273497v1>.
+Full details are available at <https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(23)00117-1/fulltext>.
 
 
 ## Building
@@ -90,7 +90,7 @@ Plots will be stored in [Plots](./Plots), although these are again untracked by 
 The following papers are relevant to the model. Please note that some of them
 may require a subscription.
 
-- <https://www.medrxiv.org/content/10.1101/2022.04.06.22273497v1>
+- <https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(23)00117-1/fulltext>
 - <https://www.pnas.org/content/113/32/9081>
 - <https://www.science.org/doi/10.1126/sciadv.aba8399>
 
